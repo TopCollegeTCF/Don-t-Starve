@@ -1,4 +1,4 @@
-# Don-t-Starve ZOV slava LDPR
+# Don-t-Starve
 Учебный командный проект первого курса Колледжа Топ - веб игра на JavaScript.
 
 ![Версия](https://img.shields.io/badge/версия_0.0.1-blue)
