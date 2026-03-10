@@ -1,4 +1,4 @@
-# Don-t-Starve ZOV glory of LDPR
+# Don-t-Starve ZOV glory of LDPR by Zhirinovskiy
 Учебный командный проект первого курса Колледжа Топ - веб игра на JavaScript.
 
 ![Версия](https://img.shields.io/badge/версия_0.0.1-blue)
