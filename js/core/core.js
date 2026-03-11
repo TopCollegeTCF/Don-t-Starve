@@ -1,3 +1,18 @@
+let nameGroup = "Core Mechanics"
+
+
+
+
 window.helloCore = function() {
-    console.log("Core Mechanics ready");
+    hello();
+    bye();
 }
+
+function hello(){
+    console.log("Hello from Core!");
+}
+
+function bye(){
+    console.log("Bye from Core!");
+}
+
