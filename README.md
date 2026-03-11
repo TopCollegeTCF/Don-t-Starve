@@ -1,4 +1,4 @@
-# Don-t-Starve ZOV glory of LDPR by Zhirinovskiy
+# Don-t-Starve
 Учебный командный проект первого курса Колледжа Топ - веб игра на JavaScript.
 
 ![Версия](https://img.shields.io/badge/версия_0.0.1-blue)
@@ -36,6 +36,8 @@
   <a href="https://github.com/muesimka"><img src="https://github.com/muesimka.png" width="50" style="border-radius: 50%;"></a>
   <a href="https://github.com/nktnvrvskj"><img src="https://github.com/nktnvrvskj.png" width="50" style="border-radius: 50%;"></a>
   <a href="https://github.com/gearencore"><img src="https://github.com/gearencore.png" width="50" style="border-radius: 50%;"></a>
+  <a href="https://github.com/Rand125"><img src="https://github.com/Rand125.png" width="50" style="border-radius: 50%;"></a>
+  <a href="https://github.com/TEJl0"><img src="https://github.com/TEJl0.png" width="50" style="border-radius: 50%;"></a>
 </div>
 
 > [!IMPORTANT]

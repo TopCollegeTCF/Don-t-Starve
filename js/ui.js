@@ -1,3 +1,3 @@
-window.helloAI = function() {
+function helloAI() {
     console.log("AI ready");
 }
