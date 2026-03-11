@@ -20,3 +20,4 @@ window.drawHealthBar = function(ctx, x, y, healthPercent) {
     ctx.strokeStyle = 'black';
     ctx.strokeRect(x, y, barWidth, barHeight);
 }
+
