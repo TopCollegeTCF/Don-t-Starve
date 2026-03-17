@@ -1,4 +1,4 @@
-// Получаем canvas и контекст
+// Получаем canvas и кoнтекст
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
