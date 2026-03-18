@@ -1,4 +1,4 @@
-let nameGroup = "Core Mechanics"
+let nameGroup = "SE"
 
 
 
