@@ -9,10 +9,10 @@ window.helloCore = function() {
 }
 
 function hello(){
-    console.log("Hello from Core!");
+    console.log("Hello from SE!");
 }
 
 function bye(){
-    console.log("Bye from Core!");
+    console.log("Bye from SE!");
 }
-
+hello()
