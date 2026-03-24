@@ -33,3 +33,6 @@ function gameLoop() {
 //gameLoop();
 
 helloCore();
+window.GameState.init();
+console.log("Game state:", window.GameState.getState());
+window.GameState.updateScore(10);
