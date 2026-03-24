@@ -15,9 +15,10 @@ function gameLoop() {
     
     requestAnimationFrame(gameLoop);
     // Рисуем врагов
-    drawEnemy(ctx, 300, 200, 'spider');
-    drawEnemy(ctx, 600, 350, 'hound');
-    
+    // drawEnemy(ctx, 300, 200, 'spider');
+    // drawEnemy(ctx, 600, 350, 'hound');
+    drawSpider(ctx, 300, 200)
+
     // Рисуем эффекты
     drawPickupEffect(ctx, 450, 250);
     
