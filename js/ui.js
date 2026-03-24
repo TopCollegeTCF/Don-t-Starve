@@ -35,4 +35,30 @@ window.drawHungerBar = function(ctx, x, y, hungerPercent) {
     ctx.strokeRect(x, y, barWidth, barHeight);
 }
 
+// Функция для подписей
+window.drawBarText = function(ctx, x, y, label, value) {
+    // TODO: Написать текст вида "HP: 75" справа от полоски
+    ctx.font = '14px Arial';
+    ctx.fillStyle = 'black';
+    ctx.fillText(`${label}: ${value}`, x + 210, y + 15);
+}
+
+// Общая функция для интерфейса
+window.drawHungerHealth = function(ctx, hunger, health) {
+    const startX = 10;
+    const startY = 10;
+    const barHeight = 20;
+    
+    // Рисуем здоровье
+    window.drawHealthBar(ctx, startX, startY, health);
+    window.drawBarText(ctx, startX, startY, 'HP', health);
+    
+    // Рисуем голод
+    window.drawHungerBar(ctx, startX, startY + barHeight + 5, hunger);
+    window.drawBarText(ctx, startX, startY + barHeight + 5, 'Hunger', hunger);
+}
+
+drawHealthBar();
 drawHungerBar();
+drawBarText();
+drawHungerHealth();
