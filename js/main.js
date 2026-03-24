@@ -33,3 +33,6 @@ function gameLoop() {
 gameLoop();
 
 helloCore();
+
+helloCore();
+window.startGameLoop();
