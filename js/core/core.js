@@ -45,3 +45,19 @@ window.drawPlayerEyes = function(ctx, x, y) {
     // 👇 Твой код здесь
     
 }
+
+function helloCore() {
+    console.log("⚙️ Core Mechanics ready");
+    return { status: "ready", module: "core" };
+}
+
+// Функция для игрового цикла (заглушка)
+window.startGameLoop = function() {
+    console.log("🎮 Game loop initialized");
+    return true;
+};
+
+// Функция для обновления игрового состояния
+window.updateGame = function(deltaTime) {
+    console.log("🔄 Game update: " + deltaTime);
+};
