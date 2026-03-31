@@ -1,50 +1,17 @@
-// Получаем canvas и контекст
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-
-
-window.AssetLoader.registerImage('player', 'assets/images/player.png');
-window.AssetLoader.registerImage('tree', 'assets/images/tree.png');
-window.AssetLoader.onComplete = () => console.log('Ready to render!');
-
-window.GameState.init();
-console.log("Game state:", window.GameState.getState());
-window.GameState.updateScore(10);
-
-const enemy1 = window.GameAI.addEnemy(100, 100, 50);
-const enemy2 = window.GameAI.addEnemy(300, 200, 75);
-window.GameAI.updateEnemies();
-console.log("Enemies count:", window.GameAI.getEnemies().length);
 window.onload = function() {
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     
-    // Инициализация рендерера
+    // СНАЧАЛА инициализируем рендерер - он нарисует временный фон
     GameRenderer.init(ctx);
     
     // Инициализация обработчика ввода
     InputHandler.init(canvas);
     
     // Список изображений для загрузки
-    const imagesToLoad = {
-        player: 'assets/images/player.png',
-        enemy: 'assets/images/enemy.png',
-        tree: 'assets/images/tree.png',
-        berry: 'assets/images/berry.png',
-        ground: 'assets/images/ground.png',
-        heart: 'assets/images/heart.png',
-        meat: 'assets/images/meat.png',
-        button: 'assets/images/button.png'
-    };
-    
+    const imagesToLoad = window.GameAssets.images;
     // Список звуков для загрузки
-    const soundsToLoad = {
-        click: 'assets/audio/sounds/click.mp3',
-        gather: 'assets/audio/sounds/gather.mp3',
-        hit: 'assets/audio/sounds/hit.mp3',
-        ambient: 'assets/audio/music/ambient.mp3',
-        gameover: 'assets/audio/sounds/gameover.mp3'
-    };
+    const soundsToLoad = window.GameAssets.sounds;
     
     // Загрузка всех ресурсов
     let imagesLoaded = false;
@@ -59,6 +26,60 @@ window.onload = function() {
             startGameLoop();
         }
     }
+    
+    // Немедленно инициализируем GameState для тестовых объектов
+    GameState.init();
+    
+    // Создаем тестовые объекты, чтобы сразу было что рисовать
+    if(GameState.trees.length === 0) {
+        for(let i = 0; i < 5; i++) {
+            GameState.trees.push({
+                x: 100 + Math.random() * 600,
+                y: 100 + Math.random() * 350,
+                wood: 15
+            });
+        }
+    }
+    
+    if(GameState.berries.length === 0) {
+        for(let i = 0; i < 4; i++) {
+            GameState.berries.push({
+                x: 120 + Math.random() * 600,
+                y: 120 + Math.random() * 350,
+                count: 8
+            });
+        }
+    }
+    
+    // Рисуем тестовую сцену, пока грузятся ресурсы
+    function drawTestScene() {
+        if(!GameRenderer.ctx) return;
+        
+        // Очищаем и рисуем фон
+        GameRenderer.drawGround();
+        
+        // Рисуем деревья
+        for(let tree of GameState.trees) {
+            GameRenderer.drawTree(tree.x, tree.y);
+        }
+        
+        // Рисуем ягоды
+        for(let berry of GameState.berries) {
+            GameRenderer.drawBerry(berry.x, berry.y, berry.count);
+        }
+        
+        // Рисуем игрока
+        GameRenderer.drawPlayer(GameState.player.x, GameState.player.y, GameState.player.hp);
+        
+        // Рисуем UI
+        drawUIPanel(GameRenderer.ctx, GameState.player.hp, GameState.player.hunger, GameState.player.wood, GameState.day);
+        drawUIButtons(GameRenderer.ctx);
+        
+        requestAnimationFrame(drawTestScene);
+    }
+    
+    // Запускаем тестовую отрисовку сразу
+    drawTestScene();
     
     AssetLoader.loadAll(imagesToLoad, () => {
         console.log("✅ All images loaded");
@@ -80,7 +101,7 @@ window.onload = function() {
         restart: () => CoreGame.restart()
     });
     
-    // Запуск игрового цикла
+    // Игровой цикл (будет запущен после загрузки ресурсов)
     function startGameLoop() {
         function frame(time) {
             CoreGame.gameLoop(time);
@@ -91,28 +112,4 @@ window.onload = function() {
     
     console.log("🚀 Game initialized - waiting for assets...");
 };
-// Игровой цикл
-function gameLoop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Рисуем задний план (деревья)
-    drawTree(ctx, 200, 300);
-    drawTree(ctx, 500, 400);
-    
-    // Рисуем игрока
-    drawPlayer(ctx, 400, 300);
-    // Рисуем врагов
-    // drawEnemy(ctx, 300, 200, 'spider');
-    // drawEnemy(ctx, 600, 350, 'hound');
-    drawSpider(ctx, 300, 200)
 
-    // Рисуем эффекты
-    drawPickupEffect(ctx, 450, 250);
-    
-    // Рисуем интерфейс ПОВЕРХ всего
-    drawHungerHealth(ctx, 75, 60);
-    
-    requestAnimationFrame(gameLoop);
-}
-// Запускаем игру
-gameLoop();
