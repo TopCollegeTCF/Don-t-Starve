@@ -41,3 +41,80 @@ function gameLoop() {
 }
 // Запускаем игру
 gameLoop();
+
+window.onload = function() {
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Инициализация рендерера
+    GameRenderer.init(ctx);
+    
+    // Инициализация обработчика ввода
+    InputHandler.init(canvas);
+    
+    // Список изображений для загрузки
+    const imagesToLoad = {
+        player: 'assets/images/player.png',
+        enemy: 'assets/images/enemy.png',
+        tree: 'assets/images/tree.png',
+        berry: 'assets/images/berry.png',
+        ground: 'assets/images/ground.png',
+        heart: 'assets/images/heart.png',
+        meat: 'assets/images/meat.png',
+        button: 'assets/images/button.png'
+    };
+    
+    // Список звуков для загрузки
+    const soundsToLoad = {
+        click: 'assets/audio/sounds/click.mp3',
+        gather: 'assets/audio/sounds/gather.mp3',
+        hit: 'assets/audio/sounds/hit.mp3',
+        ambient: 'assets/audio/music/ambient.mp3',
+        gameover: 'assets/audio/sounds/gameover.mp3'
+    };
+    
+    // Загрузка всех ресурсов
+    let imagesLoaded = false;
+    let soundsLoaded = false;
+    
+    function checkAllLoaded() {
+        if(imagesLoaded && soundsLoaded) {
+            console.log("🎮 All resources loaded! Starting game...");
+            GameState.init();
+            CoreGame.start();
+            SoundManager.playMusic('ambient', 0.3);
+            startGameLoop();
+        }
+    }
+    
+    AssetLoader.loadAll(imagesToLoad, () => {
+        console.log("✅ All images loaded");
+        imagesLoaded = true;
+        checkAllLoaded();
+    });
+    
+    SoundManager.loadAll(soundsToLoad, () => {
+        console.log("✅ All sounds loaded");
+        soundsLoaded = true;
+        checkAllLoaded();
+    });
+    
+    // Настройка коллбэков для ввода
+    InputHandler.setCallbacks({
+        gather: () => CoreGame.gather(),
+        attack: () => CoreGame.attack(),
+        move: (x, y) => GameState.setPlayerTarget(x, y),
+        restart: () => CoreGame.restart()
+    });
+    
+    // Запуск игрового цикла
+    function startGameLoop() {
+        function frame(time) {
+            CoreGame.gameLoop(time);
+            requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+    }
+    
+    console.log("🚀 Game initialized - waiting for assets...");
+};
