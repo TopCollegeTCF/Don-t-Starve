@@ -70,14 +70,21 @@ window.GameRenderer = {
         this.ctx.shadowBlur = 0;
     },
     
-    // Отрисовка UI иконок (сердце, мясо)
-    drawUIcon: function(iconName, x, y, value) {
-        const img = AssetLoader.getImage(iconName);
-        if(img && img.complete) {
-            this.ctx.drawImage(img, x, y, 28, 28);
-        }
-        this.ctx.fillStyle = "white";
-        this.ctx.font = "bold 18px monospace";
-        this.ctx.fillText(Math.floor(value), x + 35, y + 22);
+   // Обновить метод drawUIcon в GameRenderer
+drawUIcon: function(iconName, x, y, value) {
+    const img = AssetLoader.getImage(iconName);
+    if(img && img.complete) {
+        this.ctx.drawImage(img, x, y, 28, 28);
+    } else {
+        // Рисуем заглушку
+        this.ctx.fillStyle = "#ffaa66";
+        this.ctx.fillRect(x, y, 28, 28);
+        this.ctx.fillStyle = "black";
+        this.ctx.font = "16px monospace";
+        this.ctx.fillText("?", x + 10, y + 22);
     }
+    this.ctx.fillStyle = "white";
+    this.ctx.font = "bold 18px monospace";
+    this.ctx.fillText(Math.floor(value), x + 35, y + 22);
+}
 };

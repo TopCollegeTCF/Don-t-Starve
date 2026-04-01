@@ -1,3 +1,6 @@
+//---------------------------------------------------------------
+// Создание игрока, сбор ресурсов, смена дня и ночи, игровой цикл
+//---------------------------------------------------------------
 let nameGroup = "Core Mechanics"
 // Функция для рисования тела игрока (жёлтый круг)
 window.drawPlayerBody = function(ctx, x, y) {
@@ -282,6 +285,9 @@ window.CoreGame = {
         // Кнопки
         drawUIButtons(GameRenderer.ctx);
         
+        // После отрисовки UI панели и кнопок добавить:
+        // Эффекты
+        EffectsManager.draw(GameRenderer.ctx);
         // Индикатор цели
         if(GameState.player.targetX !== null) {
             const ctx = GameRenderer.ctx;

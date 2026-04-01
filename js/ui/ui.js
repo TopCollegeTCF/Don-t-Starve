@@ -11,6 +11,9 @@ window.drawUIPanel = function(ctx, health, hunger, wood, day) {
     // Фон панели
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
     ctx.fillRect(0, 0, 800, 55);
+   
+GameRenderer.drawUIcon('heart', 10, 8, health);   // вместо ручного рисования сердца
+GameRenderer.drawUIcon('meat', 100, 8, hunger);   // вместо ручного рисования мяса
     
     // Здоровье с иконкой сердца
     const heartImg = AssetLoader.getImage('heart');
