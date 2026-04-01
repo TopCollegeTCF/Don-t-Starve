@@ -285,6 +285,9 @@ window.CoreGame = {
         // Кнопки
         drawUIButtons(GameRenderer.ctx);
         
+        // После отрисовки UI панели и кнопок добавить:
+        // Эффекты
+        EffectsManager.draw(GameRenderer.ctx);
         // Индикатор цели
         if(GameState.player.targetX !== null) {
             const ctx = GameRenderer.ctx;
