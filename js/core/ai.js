@@ -138,11 +138,27 @@ window.GameAI = {
         return enemy;
     },
     
-    updateEnemies: function() {
-        for(let i = 0; i < this.enemies.length; i++) {
-            // Логика движения врагов (будет позже)
-            console.log(`👾 Enemy ${i} position: (${this.enemies[i].x}, ${this.enemies[i].y})`);
+   updateEnemies: function(delta, playerX, playerY) {
+    const speed = GameBalance.ENEMY_SPEED;
+    
+    for(let i = 0; i < this.enemies.length; i++) {
+        const e = this.enemies[i];
+        const dx = playerX - e.x;
+        const dy = playerY - e.y;
+        const dist = Math.hypot(dx, dy);
+        
+        // Двигаться только если игрок в радиусе 300 пикселей
+        if(dist > 0.01 && dist < 300) {
+            const move = speed * delta;
+            e.x += (dx / dist) * move;
+            e.y += (dy / dist) * move;
         }
+        
+        // Ограничение по границам карты
+        e.x = Math.max(30, Math.min(770, e.x));
+        e.y = Math.max(50, Math.min(540, e.y));
+    }
+},
     },
     
     getEnemies: function() {
