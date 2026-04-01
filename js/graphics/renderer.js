@@ -70,21 +70,26 @@ window.GameRenderer = {
         this.ctx.shadowBlur = 0;
     },
     
-   // Обновить метод drawUIcon в GameRenderer
-drawUIcon: function(iconName, x, y, value) {
-    const img = AssetLoader.getImage(iconName);
-    if(img && img.complete) {
-        this.ctx.drawImage(img, x, y, 28, 28);
-    } else {
-        // Рисуем заглушку
-        this.ctx.fillStyle = "#ffaa66";
-        this.ctx.fillRect(x, y, 28, 28);
-        this.ctx.fillStyle = "black";
-        this.ctx.font = "16px monospace";
-        this.ctx.fillText("?", x + 10, y + 22);
+    // Отрисовка UI иконок (сердце, мясо)
+    drawUIcon: function(iconName, x, y, value) {
+        const img = AssetLoader.getImage(iconName);
+        if(img && img.complete) {
+            this.ctx.drawImage(img, x, y, 28, 28);
+        }
+        this.ctx.fillStyle = "white";
+        this.ctx.font = "bold 18px monospace";
+        this.ctx.fillText(Math.floor(value), x + 35, y + 22);
     }
-    this.ctx.fillStyle = "white";
-    this.ctx.font = "bold 18px monospace";
-    this.ctx.fillText(Math.floor(value), x + 35, y + 22);
-}
 };
+// Обновить метод drawGround в GameRenderer
+drawGround: function() {
+    const img = AssetLoader.getImage('ground');
+    if(img && img.complete) {
+        this.ctx.drawImage(img, 0, 0, 800, 600);
+    } else {
+        // fallback если картинка не загрузилась
+        this.ctx.fillStyle = "#2d5a2c";
+        this.ctx.fillRect(0, 0, 800, 600);
+        console.log("🎨 Drawing fallback ground");
+    }
+},
