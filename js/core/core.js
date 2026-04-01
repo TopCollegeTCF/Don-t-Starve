@@ -8,7 +8,7 @@ window.drawPlayerBody = function(ctx, x, y) {
 
 }
 
- develop
+
 // Функция для игрового цикла (заглушка)
 window.startGameLoop = function() {
     console.log("🎮 Game loop initialized");
