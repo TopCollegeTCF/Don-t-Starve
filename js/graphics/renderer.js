@@ -8,6 +8,7 @@ window.GameRenderer = {
     },
     
     // Отрисовка фона земли
+    // Обновлено 06.04 @Gabryelf
     drawGround: function() {
         const img = AssetLoader.getImage('ground');
         if(img && img.complete) {
@@ -16,6 +17,7 @@ window.GameRenderer = {
             // fallback если картинка не загрузилась
             this.ctx.fillStyle = "#2d5a2c";
             this.ctx.fillRect(0, 0, 800, 600);
+            console.log("🎨 Drawing fallback ground");
         }
     },
     
@@ -81,15 +83,4 @@ window.GameRenderer = {
         this.ctx.fillText(Math.floor(value), x + 35, y + 22);
     }
 };
-// Обновить метод drawGround в GameRenderer
-drawGround: function() {
-    const img = AssetLoader.getImage('ground');
-    if(img && img.complete) {
-        this.ctx.drawImage(img, 0, 0, 800, 600);
-    } else {
-        // fallback если картинка не загрузилась
-        this.ctx.fillStyle = "#2d5a2c";
-        this.ctx.fillRect(0, 0, 800, 600);
-        console.log("🎨 Drawing fallback ground");
-    }
-},
+
