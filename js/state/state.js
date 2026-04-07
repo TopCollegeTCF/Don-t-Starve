@@ -175,7 +175,35 @@ window.GameState = {
             berries: [...this.berries],
             day: this.day
         };
-    }
+    },
+    // спаве врагов
+    spawnEnemy: function() {
+    const enemyTypes = ['patrol', 'guard', 'wander'];
+    const type = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+    
+    let x, y;
+    let attempts = 0;
+    do {
+        x = 100 + Math.random() * (GameConfig.WORLD_WIDTH - 200);
+        y = 100 + Math.random() * (GameConfig.WORLD_HEIGHT - 200);
+        attempts++;
+        if(attempts > 50) break;
+    } while(Math.hypot(x - this.player.x, y - this.player.y) < 300);
+    
+    const enemy = {
+        id: Date.now() + Math.random(),
+        x: x,
+        y: y,
+        hp: GameBalance.ENEMY_BASE_HP + Math.floor(Math.random() * 20),
+        maxHp: GameBalance.ENEMY_BASE_HP + Math.floor(Math.random() * 20),
+        type: type,
+        behavior: this.createEnemyBehavior(type, x, y)
+    };
+    
+    this.enemies.push(enemy);
+    console.log(`👾 ${type} enemy spawned at (${Math.floor(x)},${Math.floor(y)})`);
+    return enemy;
+}
 };
 
 helloState();
