@@ -52,3 +52,21 @@ window.AssetLoader = {
 };
 
 helloGraphics();
+// Добавить после существующего кода
+window.AssetLoader.loadFromConfig = function() {
+    if(window.GameConfig && window.GameConfig.images) {
+        console.log("🖼️ Loading images from GameConfig");
+        this.loadAll(GameConfig.images, () => {
+            console.log("✅ All GameConfig images loaded");
+        });
+    }
+};
+
+// Вызвать автоматически при загрузке
+if(document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        AssetLoader.loadFromConfig();
+    });
+} else {
+    AssetLoader.loadFromConfig();
+}

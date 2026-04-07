@@ -135,3 +135,20 @@ window.drawHungerHealth = function(ctx, hunger, health) {
     window.drawHungerBar(ctx, startX, startY + barHeight + 5, hunger);
     window.drawBarText(ctx, startX, startY + barHeight + 5, 'Hunger', hunger);
 }
+// Добавить после отрисовки игрока
+if(GameState.player.targetX !== null) {
+    const targetScaleX = GameState.player.targetX * scaleX;
+    const targetScaleY = GameState.player.targetY * scaleY;
+    mCtx.beginPath();
+    mCtx.arc(targetScaleX, targetScaleY, 3, 0, Math.PI * 2);
+    mCtx.fillStyle = "rgba(255, 255, 255, 0.8)";
+    mCtx.fill();
+    mCtx.beginPath();
+    mCtx.moveTo(targetScaleX - 5, targetScaleY);
+    mCtx.lineTo(targetScaleX + 5, targetScaleY);
+    mCtx.moveTo(targetScaleX, targetScaleY - 5);
+    mCtx.lineTo(targetScaleX, targetScaleY + 5);
+    mCtx.strokeStyle = "white";
+    mCtx.lineWidth = 1;
+    mCtx.stroke();
+}
