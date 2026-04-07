@@ -25,3 +25,11 @@ function bye(){
 }
 hello()
 
+
+
+
+
+// После строки с trees[0].wood -= gain; добавить:
+if(window.treeShakeEffects) {
+    window.treeShakeEffects[`${trees[0].x},${trees[0].y}`] = { intensity: 5 };
+}
