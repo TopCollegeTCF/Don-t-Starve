@@ -53,6 +53,21 @@ GameRenderer.drawUIcon('meat', 100, 8, hunger);   // вместо ручного
     ctx.fillText(Math.floor(hunger), 140, 35);  // <-- Math.floor
     ctx.fillText(wood, 235, 35);                // <-- wood уже целое число
     ctx.fillText("🌞 Day " + day, 700, 35);
+
+    // Добавить после строки с Day
+    const dayProgress = GameState.dayTimer / GameBalance.DAY_DURATION;
+    const isNight = dayProgress > 0.6;
+
+// Иконка времени суток
+    ctx.fillStyle = isNight ? "#aaaaff" : "#ffaa44";
+    ctx.font = "20px monospace";
+    ctx.fillText(isNight ? "🌙" : "☀️", 650, 35);
+
+// Прогресс дня (полоска)
+    ctx.fillStyle = isNight ? "#4466aa" : "#ffcc66";
+    ctx.fillRect(670, 25, 30, 6);
+    ctx.fillStyle = isNight ? "#88aaff" : "#ffee88";
+    ctx.fillRect(670, 25, 30 * (isNight ? (dayProgress - 0.6) / 0.4 : dayProgress / 0.6), 6);
     
     // Рисуем полоски здоровья и голода
     window.drawHungerHealth(ctx, hunger, health);
