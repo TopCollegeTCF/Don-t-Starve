@@ -150,3 +150,13 @@ window.drawHungerHealth = function(ctx, hunger, health) {
     window.drawHungerBar(ctx, startX, startY + barHeight + 5, hunger);
     window.drawBarText(ctx, startX, startY + barHeight + 5, 'Hunger', hunger);
 }
+
+window.drawLowHealthOverlay = function(ctx, healthPercent) {
+    if(healthPercent > 30) return;
+    
+    const intensity = 0.3 * (1 - healthPercent / 30);
+    const blink = Math.sin(Date.now() * 0.01) * 0.5 + 0.5;
+    
+    ctx.fillStyle = `rgba(255, 0, 0, ${intensity * blink})`;
+    ctx.fillRect(0, 0, 800, 600);
+};
