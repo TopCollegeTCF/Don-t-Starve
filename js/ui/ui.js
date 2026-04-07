@@ -71,6 +71,11 @@ GameRenderer.drawUIcon('meat', 100, 8, hunger);   // вместо ручного
     
     // Рисуем полоски здоровья и голода
     window.drawHungerHealth(ctx, hunger, health);
+
+    // Добавить в конец функции
+    ctx.fillStyle = "#ff6666";
+    ctx.font = "12px monospace";
+    ctx.fillText(`👾 ${GameState.enemies.length}`, 750, 50);
 };
 
 // Отрисовка кнопок UI
