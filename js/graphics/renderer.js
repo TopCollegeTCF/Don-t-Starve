@@ -48,6 +48,11 @@ window.GameRenderer = {
         this.ctx.fillStyle = "#ff6666";
         this.ctx.fillRect(x - 25, y - 35, 50 * (hp / maxHp), 5);
     },
+
+    // Добавить после отрисовки врагов
+    if(GameBalance.FOG_OF_WAR_ENABLED) {
+        GameRenderer.drawFogOfWar(GameState.player.x, GameState.player.y, GameBalance.VISION_RADIUS);
+    }
     
     // Отрисовка дерева
     drawTree: function(x, y) {
