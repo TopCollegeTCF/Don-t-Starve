@@ -162,6 +162,26 @@ drawTree: function(worldX, worldY) {
         this.ctx.fillStyle = "white";
         this.ctx.font = "bold 18px monospace";
         this.ctx.fillText(Math.floor(value), x + 35, y + 22);
-    }
+     }
+
+    },
+    drawFogOfWar: function(playerX, playerY, visionRadius = 200) {
+      this.ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+      this.ctx.fillRect(0, 0, 800, 600);
+
+      // Вырезаем видимую область (сложно, используем радиальный градиент)
+      const screenPlayer = this.worldToScreen(playerX, playerY);
+      const gradient = this.ctx.createRadialGradient(
+          screenPlayer.x, screenPlayer.y, 0,
+          screenPlayer.x, screenPlayer.y, visionRadius
+      );
+      gradient.addColorStop(0, 'rgba(0,0,0,0)');
+      gradient.addColorStop(1, 'rgba(0,0,0,0.8)');
+
+      this.ctx.globalCompositeOperation = 'destination-out';
+      this.ctx.fillStyle = gradient;
+      this.ctx.fillRect(0, 0, 800, 600);
+      this.ctx.globalCompositeOperation = 'source-over';
+  }
 };
 
