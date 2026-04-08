@@ -13,6 +13,24 @@ function helloAI() {
 // ===== GAME AI (ОСНОВНОЙ) =====
 window.GameAI = {
     enemies: [],
+
+    spawnEnemy: function() {
+        let side, y;
+        let player = GameState.player;
+        let safe = false;
+        let attempts = 0;
+        
+        while(!safe && attempts < 10) {
+            side = Math.random() > 0.5 ? 50 : 750;
+            y = 150 + Math.random() * 350;
+            const distToPlayer = Math.hypot(side - player.x, y - player.y);
+            if(distToPlayer > 100) safe = true;
+            attempts++;
+        }
+        
+        const hp = GameBalance.ENEMY_BASE_HP + Math.random() * 15;
+        this.addEnemy(side, y, hp);
+    },
     
     addEnemy: function(x, y, hp = 100) {
         const enemy = { 
