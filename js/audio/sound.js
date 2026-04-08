@@ -66,9 +66,12 @@ window.SoundManager = {
             music.loop = true;
             music.volume = volume;
             music.play().catch(e => console.log("Music error:", e));
-        } else {
+       } 
+       else {
             console.warn(`⚠️ Music track not found: ${name}`);
-        }    
+       }
+ 
+
     },
     
     // НОВЫЙ МЕТОД: остановка музыки
@@ -102,7 +105,7 @@ window.SoundManager = {
     
     isNightTime: function(dayTimer, dayDuration) {
         return dayTimer > dayDuration * 0.6; // Ночь начинается с 60% дня
-    }
+    },
     playDayMusic: function() {
         if(this.currentDayMusic) this.stopMusic(this.currentDayMusic);
         this.currentDayMusic = 'ambient_day';
