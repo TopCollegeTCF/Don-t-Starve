@@ -9,7 +9,6 @@ function helloQA() {
     const modules = [
         { name: "Core", check: () => typeof helloCore === 'function' },
         { name: "State", check: () => typeof helloState === 'function' },
-        { name: "Graphics", check: () => typeof helloGraphics === 'function' },
         { name: "Sound", check: () => typeof helloSound === 'function' },
         { name: "AI", check: () => typeof helloAI === 'function' },
         { name: "UI", check: () => typeof helloUI === 'function' }

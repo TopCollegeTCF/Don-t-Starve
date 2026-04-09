@@ -1,6 +1,7 @@
 //---------------------------------------------------------------
 // Создание игрока, сбор ресурсов, смена дня и ночи, игровой цикл
 //---------------------------------------------------------------
+
 let nameGroup = "Core Mechanics"
 // Функция для рисования тела игрока (жёлтый круг)
 window.drawPlayerBody = function(ctx, x, y) {
@@ -75,6 +76,10 @@ function helloCore() {
 }
 
 window.CoreGame = {
+    // Добавить свойства
+    fpsCounter: 0,
+    fpsTimer: 0,
+    currentFPS: 0,
     lastTimestamp: 0,
     gameActive: true,
     
@@ -82,6 +87,41 @@ window.CoreGame = {
     start: function() {
         this.lastTimestamp = 0;
         console.log("🎮 Game loop started");
+
+        autoGatherResources: function() {
+    if(!GameState.gameActive) return;
+    
+    const autoRadius = 25;  // Радиус автоподбора
+    
+    // Автосбор деревьев
+    const trees = GameState.getTreesInRange(GameState.player.x, GameState.player.y, autoRadius);
+    if(trees.length > 0) {
+        const gain = Math.min(trees[0].wood, GameBalance.GATHER_WOOD_AMOUNT);
+        trees[0].wood -= gain;
+        GameState.addWood(gain);
+        if(window.EffectsManager) {
+            EffectsManager.addPickupEffect(trees[0].x, trees[0].y);
+        }
+        if(trees[0].wood <= 0) {
+            GameState.removeTree(trees[0]);
+        }
+    }
+    
+    // Автосбор ягод
+    const berries = GameState.getBerriesInRange(GameState.player.x, GameState.player.y, autoRadius);
+    if(berries.length > 0) {
+        const gain = Math.min(berries[0].count, GameBalance.GATHER_BERRY_AMOUNT);
+        berries[0].count -= gain;
+        GameState.addHunger(gain * GameBalance.BERRY_HUNGER_RESTORE);
+        if(window.EffectsManager) {
+            EffectsManager.addPickupEffect(berries[0].x, berries[0].y);
+        }
+        if(berries[0].count <= 0) {
+            GameState.removeBerry(berries[0]);
+        }
+    }
+}
+
     },
     
     // Игровой цикл (вызывается из requestAnimationFrame)
@@ -102,9 +142,20 @@ window.CoreGame = {
     // Обновление логики игры
     update: function(delta) {
         if(!GameState.gameActive) return;
+
+                // Добавить в начало метода
+        this.fpsTimer += delta;
+        if(this.fpsTimer >= 1.0) {
+            this.currentFPS = Math.round(this.fpsCounter / this.fpsTimer);
+            this.fpsCounter = 0;
+            this.fpsTimer = 0;
+        }
+        this.fpsCounter++;
         
         // Движение игрока
         GameState.movePlayer(delta, GameBalance.PLAYER_SPEED);
+
+        this.autoGatherResources();
         
         // Голод
         GameState.player.hunger -= delta * GameBalance.HUNGER_DRAIN_RATE;
@@ -120,6 +171,7 @@ window.CoreGame = {
             GameState.nextDay();
             console.log(`🌞 Day ${GameState.day}`);
         }
+
         const isNight = SoundManager.isNightTime(GameState.dayTimer, GameBalance.DAY_DURATION);
         if(isNight && !this.wasNight) {
             SoundManager.playNightMusic();
@@ -275,6 +327,7 @@ window.CoreGame = {
         GameRenderer.drawPlayer(GameState.player.x, GameState.player.y, GameState.player.hp);
         
         // Эффекты
+
         EffectsManager.draw(ctx, GameCamera);
         
         // UI панель
@@ -300,8 +353,20 @@ window.CoreGame = {
             ctx.lineWidth = 2;
             ctx.stroke();
         }
+
+
+                // Добавить перед Game Over экраном
+        if(GameBalance.SHOW_FPS) {
+            ctx.fillStyle = "rgba(0,0,0,0.5)";
+            ctx.fillRect(5, 5, 50, 20);
+            ctx.fillStyle = "#0f0";
+            ctx.font = "10px monospace";
+            ctx.fillText(`FPS: ${this.currentFPS}`, 8, 20);
+        }
+        
         // Добавить перед Game Over экраном
         drawLowHealthOverlay(ctx, GameState.player.hp);
+
         // Game Over
         if(!GameState.gameActive) {
             const ctx = GameRenderer.ctx;
@@ -318,3 +383,5 @@ window.CoreGame = {
 };
 
 helloCore();
+
+
