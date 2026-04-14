@@ -17,10 +17,13 @@ window.GameState = {
         targetX: null,  // цель для движения
         targetY: null   // цель для движения
     },
-
+    world: {
+        trees: [],
+        berries: [],
+        width: GameConfig.WORLD_WIDTH,
+        height: GameConfig.WORLD_HEIGHT
+    },
     // Мир
-    trees: [],   // массив деревьев {x, y, wood}
-    berries: [], // массив ягод {x, y, count}
     day: 1,
     dayTimer: 0,
     spawnTimer: 0,
@@ -30,18 +33,70 @@ window.GameState = {
     init: function() {
         this.reset();
     },
-
+generateWorld: function() {
+        this.world.trees = [];
+        this.world.berries = [];
+        
+        // Генерация деревьев кластерами
+        const treeClusters = 12;
+        for(let c = 0; c < treeClusters; c++) {
+            const centerX = 200 + Math.random() * (GameConfig.WORLD_WIDTH - 400);
+            const centerY = 150 + Math.random() * (GameConfig.WORLD_HEIGHT - 300);
+            const clusterSize = 4 + Math.floor(Math.random() * 6);
+            
+            for(let i = 0; i < clusterSize; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const radius = 40 + Math.random() * 70;
+                this.world.trees.push({
+                    x: Math.max(50, Math.min(GameConfig.WORLD_WIDTH - 50, centerX + Math.cos(angle) * radius)),
+                    y: Math.max(50, Math.min(GameConfig.WORLD_HEIGHT - 50, centerY + Math.sin(angle) * radius)),
+                    wood: 12 + Math.floor(Math.random() * 10)
+                });
+            }
+        }
+        
+        // Генерация ягод
+        const berryClusters = 8;
+        for(let c = 0; c < berryClusters; c++) {
+            const centerX = 150 + Math.random() * (GameConfig.WORLD_WIDTH - 300);
+            const centerY = 100 + Math.random() * (GameConfig.WORLD_HEIGHT - 200);
+            const clusterSize = 3 + Math.floor(Math.random() * 4);
+            
+            for(let i = 0; i < clusterSize; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const radius = 30 + Math.random() * 50;
+                this.world.berries.push({
+                    x: Math.max(40, Math.min(GameConfig.WORLD_WIDTH - 40, centerX + Math.cos(angle) * radius)),
+                    y: Math.max(40, Math.min(GameConfig.WORLD_HEIGHT - 40, centerY + Math.sin(angle) * radius)),
+                    count: 6 + Math.floor(Math.random() * 8)
+                });
+            }
+        }
+        
+    },
     // Сброс игры
-    reset: function() {
+   reset: function() {
         this.gameActive = true;
         this.player = {
-            x: 400,
-            y: 500,
+            x: GameConfig.WORLD_WIDTH / 2,
+            y: GameConfig.WORLD_HEIGHT / 2,
             hp: 100,
             hunger: 100,
             wood: 0,
             targetX: null,
             targetY: null
+        };
+        this.day = 1;
+        this.dayTimer = 0;
+        this.spawnTimer = 0;
+        this.generateWorld();
+        this.enemies = [];
+        
+        // Создаем начальных врагов
+        for(let i = 0; i < 6; i++) {
+            this.spawnEnemy();
+        }
+    },
         };
         this.trees = [];
         this.berries = [];
