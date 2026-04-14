@@ -94,6 +94,11 @@ window.CoreGame = {
     const autoRadius = 25;  // Радиус автоподбора
     
     // Автосбор деревьев
+    getTreesInRange: function(x, y, radius) {
+        return this.trees.filter(tree => 
+            Math.hypot(tree.x - x, tree.y - y) < radius && tree.wood > 0
+        );
+    },
     const trees = GameState.getTreesInRange(GameState.player.x, GameState.player.y, autoRadius);
     if(trees.length > 0) {
         const gain = Math.min(trees[0].wood, GameBalance.GATHER_WOOD_AMOUNT);
@@ -108,6 +113,11 @@ window.CoreGame = {
     }
     
     // Автосбор ягод
+    getBerriesInRange: function(x, y, radius) {
+        return this.berries.filter(berry => 
+            Math.hypot(berry.x - x, berry.y - y) < radius && berry.count > 0
+        );
+    },
     const berries = GameState.getBerriesInRange(GameState.player.x, GameState.player.y, autoRadius);
     if(berries.length > 0) {
         const gain = Math.min(berries[0].count, GameBalance.GATHER_BERRY_AMOUNT);

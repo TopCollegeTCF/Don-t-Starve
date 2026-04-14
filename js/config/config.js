@@ -1,5 +1,8 @@
 // Добавить в конец файла config.js
-window.GameAssets = {
+window.GameConfig = {
+    WORLD_WIDTH: 2400,
+    WORLD_HEIGHT: 1800,
+    CAMERA_SMOOTH: 0.1,
     images: {
         player: 'assets/images/player.png',
         enemy: 'assets/images/enemy.png',
@@ -18,3 +21,14 @@ window.GameAssets = {
         gameover: 'assets/sounds/gameover.mp3'
     }
 };
+
+// Загружаем изображения из GameConfig
+window.addEventListener('DOMContentLoaded', () => {
+    // Загрузка изображений из конфига
+    if(window.GameConfig && window.GameConfig.images && window.AssetLoader) {
+        console.log("🖼️ Loading images from config:", Object.keys(GameConfig.images));
+        AssetLoader.loadAll(GameConfig.images, () => {
+            console.log("✅ All images loaded successfully!");
+        });
+    }
+});

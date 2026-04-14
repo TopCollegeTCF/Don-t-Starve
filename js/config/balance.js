@@ -1,3 +1,4 @@
+// Баланс игры
 window.GameBalance = {
     // Игрок
     PLAYER_SPEED: 180,
@@ -19,11 +20,9 @@ window.GameBalance = {
     
     // Мир
     HUNGER_DRAIN_RATE: 0.18,
-    DAY_DURATION: 30,
-    ENEMY_SPAWN_DELAY: 12
-
-    // FPS COUNTER
-    SHOW_FPS: true,
-    FOG_OF_WAR_ENABLED: false,  // Пока выключено для производительности
-    VISION_RADIUS: 250
+    DAY_DURATION: 30, // секунд
+    ENEMY_SPAWN_DELAY: 12, // секунд
+    MAX_ENEMIES: 12
 };
+
+console.log("⚖️ Balance loaded");
