@@ -1,19 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="favicon.ico">
-        <title>def</title>
-    </head>
-    <body>
-        <canvas id="gameCanvas" width="800" height="600" style="border:1px solid black; display: block; margin: 0 auto;"></canvas>
-        <img src="assets/images/placeholder.png" alt="placeholder" style="display:none;" id="testImage">
-        <audio id="testSound" src="assets/sounds/click.mp3" preload="auto"></audio>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.ico">
+    <title>Don't Starve Clone</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #1a1a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: monospace;
+        }
+        #gameContainer {
+            position: relative;
+        }
+        canvas {
+            border: 2px solid #4a3a2a;
+            display: block;
+            margin: 0 auto;
+            cursor: crosshair;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        #minimap {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 150px;
+            height: 150px;
+            background: rgba(0,0,0,0.7);
+            border: 2px solid #ffde9c;
+            border-radius: 5px;
+        }
+        .controls-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: #0f0;
+            padding: 5px 10px;
+            font-size: 11px;
+            border-radius: 5px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div class="controls-info">
 
-        <script src="js/config/config.js"></script>
+        </div>
+        <canvas id="minimap" width="150" height="150"></canvas>
+    </div>
+
+    <!-- Скрипты в правильном порядке -->
+   <script src="js/config/config.js"></script>
         <script src="js/config/balance.js"></script>   <!-- обновлено 06.04 @Gabryelf - add link -->
         <script src="js/state/state.js"></script>
         <script src="js/graphics/assets.js"></script>
@@ -27,7 +74,6 @@
         <script src="js/core/core.js"></script>
         <script src="js/main.js"></script>
         <script src="js/tests/qa.js"></script>
-
-    </body>
-
+</body>
 </html>
+

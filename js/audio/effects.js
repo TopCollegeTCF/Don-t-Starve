@@ -34,6 +34,18 @@ window.EffectsManager = {
     },
     
     // Отрисовка всех эффектов
+
+    //убедиться, что в методе addPickupEffect есть этот код:
+    addPickupEffect: function(x, y) {
+        this.effects.push({
+            x: x, y: y,
+            lifetime: 0.4,
+            maxLifetime: 0.4,
+            type: 'pickup'
+        });
+        SoundManager.play('gather');  // <-- Проверить, что эта строка есть
+    },
+  
     draw: function(ctx, camera) {
          for(let e of this.effects) {
             const alpha = e.lifetime / e.maxLifetime;
@@ -59,4 +71,5 @@ window.EffectsManager = {
             ctx.fill();
         }
     }
+
 };

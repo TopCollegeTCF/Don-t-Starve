@@ -326,3 +326,4 @@ window.CoreGame = {
 helloCore();
 
 
+console.log("⚙️ Core ready");

@@ -24,7 +24,6 @@ window.addEventListener('DOMContentLoaded', () => {
         GameRenderer.init(ctx, GameCamera);
     } else {
         console.error("❌ GameRenderer not loaded!");
-=======
     function checkAllLoaded() {
         if(imagesLoaded && soundsLoaded) {
             console.log("🎮 All resources loaded! Starting game...");
