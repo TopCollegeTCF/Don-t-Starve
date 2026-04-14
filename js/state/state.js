@@ -1,34 +1,38 @@
-// Состояние игры
+function helloState() {
+    console.log("📊 Game State ready");
+}
+
+// Initial game state setup
 window.GameState = {
+    // Игровые флаги
     gameActive: true,
-    
+
+    // Данные игрока
     player: {
-        x: 1200,
-        y: 900,
+        x: 400,
+        y: 500,
         hp: 100,
         hunger: 100,
         wood: 0,
-        targetX: null,
-        targetY: null
+        targetX: null,  // цель для движения
+        targetY: null   // цель для движения
     },
-    
     world: {
         trees: [],
         berries: [],
         width: GameConfig.WORLD_WIDTH,
         height: GameConfig.WORLD_HEIGHT
     },
-    
-    enemies: [],
+    // Мир
     day: 1,
     dayTimer: 0,
     spawnTimer: 0,
-    
+    enemies: [],  // Добавим массив врагов для спавна
+
+    // Инициализация состояния
     init: function() {
-        this.generateWorld();
         this.reset();
     },
-    
     generateWorld: function() {
         this.world.trees = [];
         this.world.berries = [];
@@ -69,9 +73,7 @@ window.GameState = {
             }
         }
         
-        console.log(`🌍 World generated: ${this.world.trees.length} trees, ${this.world.berries.length} berries`);
     },
-    
     reset: function() {
         this.gameActive = true;
         this.player = {
@@ -94,45 +96,128 @@ window.GameState = {
             this.spawnEnemy();
         }
     },
-    
-    setPlayerTarget: function(screenX, screenY, cameraX, cameraY) {
-        if(!this.gameActive) return;
-        const worldX = screenX + cameraX;
-        const worldY = screenY + cameraY;
-        this.player.targetX = Math.max(20, Math.min(GameConfig.WORLD_WIDTH - 20, worldX));
-        this.player.targetY = Math.max(20, Math.min(GameConfig.WORLD_HEIGHT - 20, worldY));
+
+        // Создаем деревья
+        for (let i = 0; i < 6; i++) {
+            this.trees.push({
+                x: 100 + Math.random() * 600,
+                y: 100 + Math.random() * 350,
+                wood: 12 + Math.floor(Math.random() * 8)
+            });
+        }
+
+        // Создаем ягоды
+        for (let i = 0; i < 5; i++) {
+            this.berries.push({
+                x: 120 + Math.random() * 600,
+                y: 120 + Math.random() * 350,
+                count: 6 + Math.floor(Math.random() * 5)
+            });
+        }
     },
-    
-    movePlayer: function(delta, speed) {
-        if(!this.gameActive || this.player.targetX === null) return;
-        
+
+    // Установка цели движения
+    setPlayerTarget: function(x, y) {
+        if (this.gameActive) {
+            this.player.targetX = Math.max(30, Math.min(770, x));
+            this.player.targetY = Math.max(50, Math.min(540, y));
+        }
+    },
+
+    // Движение игрока к цели
+    movePlayer: function(delta, speed = 180) {
+        if (!this.gameActive || this.player.targetX === null) return;
+
         let dx = this.player.targetX - this.player.x;
         let dy = this.player.targetY - this.player.y;
         let dist = Math.hypot(dx, dy);
-        
-        if(dist < 5) {
-            this.player.targetX = null;
+
+        if (dist < 5) {
+            this.player.targetX = null;  // достигли цели
             return;
         }
-        
+
         let move = speed * delta;
         this.player.x += (dx / dist) * move;
         this.player.y += (dy / dist) * move;
-        
-        this.player.x = Math.max(20, Math.min(GameConfig.WORLD_WIDTH - 20, this.player.x));
-        this.player.y = Math.max(20, Math.min(GameConfig.WORLD_HEIGHT - 20, this.player.y));
+
+        // Ограничение по границам
+        this.player.x = Math.max(30, Math.min(770, this.player.x));
+        this.player.y = Math.max(50, Math.min(540, this.player.y));
     },
-    
+
+    // Добавление древесины
+    addWood: function(amount) {
+        this.player.wood += amount;
+    },
+
+    // Восстановление голода
+    addHunger: function(amount) {
+        this.player.hunger = Math.min(100, this.player.hunger + amount);
+    },
+
+    // Нанесение урона игроку
+    damagePlayer: function(amount) {
+        this.player.hp -= amount;
+        if (window.SoundManager) {
+            SoundManager.play('hit_player');  // Добавить звук
+        }
+        if (this.player.hp <= 0) {
+            this.gameActive = false;
+        }
+    },
+
+    // Лечение игрока
+    healPlayer: function(amount) {
+        this.player.hp = Math.min(100, this.player.hp + amount);
+    },
+
+    // Следующий день
+    nextDay: function() {
+        this.day++;
+        this.healPlayer(5);
+        this.addHunger(8);
+        if (window.SoundManager) {
+            SoundManager.play('day_change');
+        }
+        console.log(`🌞 Day ${this.day}`);
+    },
+
+    // Удаление дерева
+    removeTree: function(index) {
+        this.trees.splice(index, 1);
+    },
+
+    // Удаление ягод
+    removeBerry: function(index) {
+        this.berries.splice(index, 1);
+    },
+
+    // Получение состояния
+    getState: function() {
+        return {
+            gameActive: this.gameActive,
+            player: { ...this.player },
+            trees: [...this.trees],
+            berries: [...this.berries],
+            day: this.day
+        };
+    },
+
+    // Спавн врагов
     spawnEnemy: function() {
         const enemyTypes = ['patrol', 'guard', 'wander'];
         const type = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
-        
+
         let x, y;
+        let attempts = 0;
         do {
             x = 100 + Math.random() * (GameConfig.WORLD_WIDTH - 200);
             y = 100 + Math.random() * (GameConfig.WORLD_HEIGHT - 200);
-        } while(Math.hypot(x - this.player.x, y - this.player.y) < 300);
-        
+            attempts++;
+            if (attempts > 50) break;
+        } while (Math.hypot(x - this.player.x, y - this.player.y) < 300);
+
         const enemy = {
             id: Date.now() + Math.random(),
             x: x,
@@ -142,83 +227,11 @@ window.GameState = {
             type: type,
             behavior: this.createEnemyBehavior(type, x, y)
         };
-        
+
         this.enemies.push(enemy);
+        console.log(`👾 ${type} enemy spawned at (${Math.floor(x)},${Math.floor(y)})`);
         return enemy;
-    },
-    
-    createEnemyBehavior: function(type, x, y) {
-        switch(type) {
-            case 'patrol':
-                return {
-                    patrolPoints: [
-                        { x: x - 100 + Math.random() * 200, y: y - 100 + Math.random() * 200 },
-                        { x: x - 100 + Math.random() * 200, y: y - 100 + Math.random() * 200 },
-                        { x: x - 100 + Math.random() * 200, y: y - 100 + Math.random() * 200 }
-                    ],
-                    currentPatrolIndex: 0
-                };
-            case 'guard':
-                return {
-                    guardPoint: { x: x, y: y, radius: 80 }
-                };
-            case 'wander':
-                return {
-                    wanderAngle: Math.random() * Math.PI * 2,
-                    wanderTimer: 0
-                };
-            default:
-                return {};
-        }
-    },
-    
-    addWood: function(amount) {
-        this.player.wood += amount;
-    },
-    
-    addHunger: function(amount) {
-        this.player.hunger = Math.min(100, this.player.hunger + amount);
-    },
-    
-    damagePlayer: function(amount) {
-        this.player.hp -= amount;
-        if(this.player.hp <= 0) {
-            this.gameActive = false;
-        }
-    },
-    
-    healPlayer: function(amount) {
-        this.player.hp = Math.min(100, this.player.hp + amount);
-    },
-    
-    nextDay: function() {
-        this.day++;
-        this.healPlayer(5);
-        this.addHunger(8);
-        console.log(`🌞 Day ${this.day}`);
-    },
-    
-    getTreesInRange: function(x, y, radius) {
-        return this.world.trees.filter(tree => 
-            Math.hypot(tree.x - x, tree.y - y) < radius && tree.wood > 0
-        );
-    },
-    
-    getBerriesInRange: function(x, y, radius) {
-        return this.world.berries.filter(berry => 
-            Math.hypot(berry.x - x, berry.y - y) < radius && berry.count > 0
-        );
-    },
-    
-    removeTree: function(tree) {
-        const index = this.world.trees.indexOf(tree);
-        if(index > -1) this.world.trees.splice(index, 1);
-    },
-    
-    removeBerry: function(berry) {
-        const index = this.world.berries.indexOf(berry);
-        if(index > -1) this.world.berries.splice(index, 1);
     }
 };
 
-console.log("📊 Game State ready");
+helloState();

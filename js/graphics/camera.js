@@ -10,7 +10,6 @@ window.GameCamera = {
     init: function() {
         this.reset();
     },
-    
     reset: function() {
         if(GameState && GameState.player) {
             this.x = GameState.player.x - this.width / 2;
@@ -30,7 +29,6 @@ window.GameCamera = {
         this.x += (this.targetX - this.x) * GameConfig.CAMERA_SMOOTH;
         this.y += (this.targetY - this.y) * GameConfig.CAMERA_SMOOTH;
     },
-    
     worldToScreen: function(worldX, worldY) {
         return {
             x: worldX - this.x,
@@ -38,5 +36,3 @@ window.GameCamera = {
         };
     }
 };
-
-console.log("📷 Camera ready");
