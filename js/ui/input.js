@@ -1,114 +1,52 @@
-//--------------------------------------
-// 🖱️ Обработка ввода (мышь + клавиатура)
-//--------------------------------------
+// Обработка ввода
 window.InputHandler = {
-
     canvas: null,
-
-    // Коллбэки действий
-    onGather: null,
-    onAttack: null,
-    onMove: null,
-    onRestart: null,
-
-    //--------------------------------------
-    // 🚀 Инициализация
-    //--------------------------------------
-    init: function(canvas) {
+    camera: null,
+    
+    init: function(canvas, camera) {
         this.canvas = canvas;
+        this.camera = camera;
         this.setupEvents();
         console.log("🖱️ InputHandler initialized");
     },
-
-    //--------------------------------------
-    // 🎧 Подключение событий
-    //--------------------------------------
+    
     setupEvents: function() {
-
-        //--------------------------------------
-        // 🖱️ ЛКМ (клик)
-        //--------------------------------------
         this.canvas.addEventListener('click', (e) => {
-
-            const { x, y } = this.getMousePos(e);
-
-            // 📦 Кнопка GATHER
-            if (this.isInside(x, y, 20, 545, 90, 35)) {
-                this.onGather?.();
-                return;
+            const rect = this.canvas.getBoundingClientRect();
+            const scaleX = this.canvas.width / rect.width;
+            const scaleY = this.canvas.height / rect.height;
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+            
+            // Проверка кнопок UI
+            if(x > 20 && x < 110 && y > 545 && y < 580) {
+                if(window.CoreGame) CoreGame.gather();
+            } else if(x > 120 && x < 210 && y > 545 && y < 580) {
+                if(window.CoreGame) CoreGame.attack();
+            } else if(x > 690 && x < 780 && y > 545 && y < 580) {
+                if(window.CoreGame) CoreGame.restart();
+            } else {
+                GameState.setPlayerTarget(x, y, this.camera.x, this.camera.y);
             }
-
-            // ⚔️ Кнопка ATTACK
-            if (this.isInside(x, y, 120, 545, 90, 35)) {
-                this.onAttack?.();
-                return;
-            }
-
-            // 🔄 Кнопка RESTART
-            if (this.isInside(x, y, 690, 545, 90, 35)) {
-                this.onRestart?.();
-                return;
-            }
-
-            // 📍 Клик по миру (движение)
-            this.onMove?.(x, y);
         });
-
-        //--------------------------------------
-        // 🖱️ ПКМ (атака)
-        //--------------------------------------
+        
         this.canvas.addEventListener('contextmenu', (e) => {
-            e.preventDefault(); // отключаем меню браузера
-            this.onAttack?.();
+            e.preventDefault();
+            if(window.CoreGame) CoreGame.attack();
+            return false;
         });
-
-        //--------------------------------------
-        // ⌨️ Клавиатура
-        //--------------------------------------
+        
         window.addEventListener('keydown', (e) => {
-
-            switch (e.key.toLowerCase()) {
-
-                case 'e': // сбор
-                    e.preventDefault();
-                    this.onGather?.();
-                    break;
-
-                case 'r': // рестарт
-                    e.preventDefault();
-                    this.onRestart?.();
-                    break;
+            if(e.key === 'e' || e.key === 'E') {
+                e.preventDefault();
+                if(window.CoreGame) CoreGame.gather();
+            }
+            if(e.key === 'r' || e.key === 'R') {
+                e.preventDefault();
+                if(window.CoreGame) CoreGame.restart();
             }
         });
-    },
-
-    //--------------------------------------
-    // 🎯 Получение координат мыши (с учётом масштаба)
-    //--------------------------------------
-    getMousePos: function(e) {
-
-        const rect = this.canvas.getBoundingClientRect();
-
-        return {
-            x: (e.clientX - rect.left) * (800 / rect.width),
-            y: (e.clientY - rect.top) * (600 / rect.height)
-        };
-    },
-
-    //--------------------------------------
-    // 📦 Проверка попадания в прямоугольник
-    //--------------------------------------
-    isInside: function(px, py, x, y, w, h) {
-        return px > x && px < x + w && py > y && py < y + h;
-    },
-
-    //--------------------------------------
-    // 🔗 Установка коллбэков
-    //--------------------------------------
-    setCallbacks: function(callbacks) {
-        this.onGather = callbacks.gather;
-        this.onAttack = callbacks.attack;
-        this.onMove = callbacks.move;
-        this.onRestart = callbacks.restart;
     }
 };
+
+console.log("⌨️ Input ready");
