@@ -157,3 +157,45 @@ window.GameAI = {
 };
 
 console.log("🤖 AI ready");
+// js/core/ai.js
+class GameAI {
+    constructor(gameState, gameBalance, gameConfig) {
+        
+    }
+    
+    updateEnemies(delta, playerX, playerY) {
+        
+    }
+    
+    getBehaviorMove(enemy, delta, playerX, playerY, distToPlayer) {
+        
+    }
+    
+    patrolBehavior(enemy, delta) {
+       
+    }
+    
+    guardBehavior(enemy, playerX, playerY, distToPlayer) {
+       
+    }
+    
+    wanderBehavior(enemy, delta) {
+        
+    }
+    
+    findNearestEnemy(playerX, playerY, range) {
+       
+    }
+    
+    damageEnemy(enemy, damage) {
+       
+    }
+    
+    checkAttack(playerX, playerY) {
+        
+    }
+    
+    clearEnemies() {
+        
+    }
+}
