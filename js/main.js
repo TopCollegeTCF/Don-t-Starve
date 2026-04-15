@@ -1,78 +1,74 @@
-// Главный файл инициализации игры
+// js/main.js
 window.addEventListener('DOMContentLoaded', () => {
-    console.log("🎮 Starting Don't Starve Clone v0.1.0...");
+    console.log("🎮 Starting Don't Starve Clone...");
     
-    // Проверка наличия GameConfig
-    if(!window.GameConfig) {
-        console.error("❌ GameConfig not loaded!");
-        return;
-    }
+    // 1. Создаем камеру
+    const camera = new GameCamera();
     
-    // Инициализация камеры
-    if(window.GameCamera && typeof GameCamera.init === 'function') {
-        GameCamera.init();
-    } else {
-        console.warn("⚠️ GameCamera not available");
-        window.GameCamera = { x: 0, y: 0, worldToScreen: (x,y) => ({x,y}) };
-    }
+    // 2. Инициализируем состояние игры
+    window.gameState.init();
+    camera.reset(window.gameState.player.x, window.gameState.player.y);
     
-
-    // Инициализация рендерера с камерой
+    // 3. Создаем AI
+    const gameAI = new GameAI(window.gameState, window.gameBalance, window.gameConfig);
+    
+    // 4. Загружаем звуки
+    window.soundManager.loadAll(window.gameConfig.sounds, () => {
+        console.log("✅ All sounds loaded!");
+    });
+    
+    // 5. Загружаем изображения
+    window.assetLoader.loadAll(window.gameConfig.images, () => {
+        console.log("✅ All images loaded!");
+    });
+    
+    // 6. Создаем рендерер
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    if(window.GameRenderer) {
-        GameRenderer.init(ctx, GameCamera);
-    } else {
-        console.error("❌ GameRenderer not loaded!");
-=======
-    function checkAllLoaded() {
-        if(imagesLoaded && soundsLoaded) {
-            console.log("🎮 All resources loaded! Starting game...");
-            GameState.init();
-            SoundManager.playMusic('ambient', 0.3);
-            CoreGame.start();
-            startGameLoop();
-            // Заменить существующий объект imagesToLoad на:
-const imagesToLoad = window.GameAssets.images;
-
-// Заменить существующий объект soundsToLoad на:
-const soundsToLoad = window.GameAssets.sounds;
-        }
-
-    }
+    const renderer = new GameRenderer(ctx, camera);
     
-    // Инициализация обработчика ввода с камерой
-    if(window.InputHandler) {
-        InputHandler.init(canvas, GameCamera);
-    }
+    // 7. Создаем основной игровой цикл
+    const coreGame = new CoreGame(
+        window.gameState, 
+        window.gameBalance, 
+        gameAI, 
+        window.effectsManager, 
+        window.soundManager, 
+        camera
+    );
     
-    // Инициализация игрового состояния
-    if(window.GameState) {
-        GameState.init();
-    } else {
-        console.error("❌ GameState not loaded!");
-    }
+    // 8. Создаем обработчик ввода
+    const inputHandler = new InputHandler(canvas, camera, coreGame);
     
-    // Запуск игрового цикла
-    if(window.CoreGame) {
-        CoreGame.start();
-    }
+    // 9. Запускаем игру
+    coreGame.start();
     
-    // Анимационный цикл
-    let frameId;
+    // 10. Анимационный цикл
+    let lastTimestamp = 0;
+    
     function animate(timestamp) {
-        if(window.CoreGame) {
-            CoreGame.gameLoop(timestamp);
+        if (lastTimestamp === 0) {
+            lastTimestamp = timestamp;
+            requestAnimationFrame(animate);
+            return;
         }
-        frameId = requestAnimationFrame(animate);
+        
+        // Вычисляем время между кадрами (максимум 33 мс)
+        let delta = Math.min(0.033, (timestamp - lastTimestamp) / 1000);
+        
+        if (delta > 0.01) {
+            coreGame.update(delta);
+        }
+        
+        lastTimestamp = timestamp;
+        
+        // Отрисовка
+        coreGame.render(renderer);
+        
+        requestAnimationFrame(animate);
     }
     
-    frameId = requestAnimationFrame(animate);
-    
-    // Очистка при выгрузке
-    window.addEventListener('beforeunload', () => {
-        if(frameId) cancelAnimationFrame(frameId);
-    });
+    requestAnimationFrame(animate);
     
     console.log("✅ Game initialized successfully!");
 });
