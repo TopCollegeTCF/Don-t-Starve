@@ -10,7 +10,6 @@ class GameRenderer {
     worldToScreen(worldX, worldY) {
         return this.camera.worldToScreen(worldX, worldY);
     }
-    
     isVisible(screen, margin = 40) {
         return !(screen.x + margin < 0 || screen.x - margin > 800 || 
                  screen.y + margin < 0 || screen.y - margin > 600);
@@ -18,7 +17,6 @@ class GameRenderer {
         // Добавьте в класс GameRenderer
     drawGround() {
         const img = window.assetLoader.getImage('ground');
-        
         // Если есть загруженная текстура земли
         if (img && img.complete) {
             this.ctx.drawImage(img, 0, 0, 800, 600);
@@ -61,7 +59,6 @@ class GameRenderer {
             this.ctx.beginPath();
             this.ctx.arc(screen.x, screen.y, 18, 0, Math.PI * 2);
             this.ctx.fill();
-            
             // Глаза
             this.ctx.fillStyle = '#000';
             this.ctx.beginPath();
@@ -69,11 +66,9 @@ class GameRenderer {
             this.ctx.arc(screen.x + 6, screen.y - 5, 3, 0, Math.PI * 2);
             this.ctx.fill();
         }
-        
         // Полоска здоровья над головой
         this.drawHealthBar(screen.x, screen.y - 38, hp, 100, 56);
     }
-       
         // Добавьте в класс GameRenderer
     drawEnemy(x, y, hp, maxHp, type) {
         const screen = this.worldToScreen(x, y);
@@ -94,16 +89,13 @@ class GameRenderer {
             this.ctx.beginPath();
             this.ctx.ellipse(screen.x, screen.y, 16, 20, 0, 0, Math.PI * 2);
             this.ctx.fill();
-            
             // Глаза
             this.ctx.fillStyle = "#fff";
             this.ctx.fillRect(screen.x - 8, screen.y - 5, 4, 4);
             this.ctx.fillRect(screen.x + 4, screen.y - 5, 4, 4);
         }
-        
         // Полоска здоровья
         this.drawHealthBar(screen.x - 28, screen.y - 38, hp, maxHp, 56);
-        
         // Подпись типа врага
         this.ctx.fillStyle = "white";
         this.ctx.font = "8px monospace";
@@ -128,7 +120,6 @@ class GameRenderer {
             this.ctx.fill();
         }
     }
-    
     drawBerry(x, y, count) {
         const screen = this.worldToScreen(x, y);
         if (!this.isVisible(screen, 30)) return;
@@ -146,7 +137,6 @@ class GameRenderer {
             this.ctx.fillStyle = "#fff";
             this.ctx.fillRect(screen.x - 3, screen.y - 12, 6, 4);
         }
-        
         // Количество ягод
         this.ctx.fillStyle = "white";
         this.ctx.font = "10px monospace";
@@ -159,7 +149,6 @@ class GameRenderer {
         // Красный фон
         this.ctx.fillStyle = "#aa3333";
         this.ctx.fillRect(x, y, width, 6);
-        
         // Зеленая полоска (процент от максимума)
         this.ctx.fillStyle = "#4caf50";
         this.ctx.fillRect(x, y, width * (current / max), 6);
@@ -169,12 +158,10 @@ class GameRenderer {
         this.drawUIPanel();
         this.drawUIButtons();
     }
-    
     drawUIPanel() {
         // Полупрозрачный фон панели
         this.ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
         this.ctx.fillRect(0, 0, 800, 55);
-        
         // Здоровье
         const heartImg = window.assetLoader.getImage('heart');
         if (heartImg && heartImg.complete) {
@@ -196,26 +183,21 @@ class GameRenderer {
             this.ctx.fillRect(100, 8, 28, 28);
         }
         this.ctx.fillText(Math.floor(window.gameState.player.hunger), 140, 35);
-        
         // Древесина
         this.ctx.fillStyle = "#ffde9c";
         this.ctx.fillText("🪵", 210, 35);
         this.ctx.fillText(window.gameState.player.wood, 235, 35);
-        
         // День
         this.ctx.fillStyle = "#ffaa66";
         this.ctx.fillText("Day " + window.gameState.day, 700, 35);
-        
         // Полоски здоровья и голода
         this.drawHealthBars();
     }
-    
     drawHealthBars() {
         const x = 10, y = 65, gap = 25;
         this.drawBar(x, y, window.gameState.player.hp, 100, "red", "#4caf50", "HP");
         this.drawBar(x, y + gap, window.gameState.player.hunger, 100, "red", "#4caf50", "Hunger");
     }
-    
     drawBar(x, y, current, max, bgColor, fillColor, label) {
         const w = 200, h = 20;
         const percent = (current / max) * w;
@@ -231,14 +213,12 @@ class GameRenderer {
         this.ctx.fillStyle = "black";
         this.ctx.fillText(`${label}: ${Math.floor(current)}`, x + 210, y + 15);
     }
-    
     drawUIButtons() {
         const buttons = [
             { x: 20, y: 545, text: "GATHER" },
             { x: 120, y: 545, text: "ATTACK" },
             { x: 690, y: 545, text: "RESTART" }
         ];
-        
         const buttonImg = window.assetLoader.getImage('button');
         buttons.forEach(btn => {
             if (buttonImg && buttonImg.complete) {
@@ -247,13 +227,11 @@ class GameRenderer {
                 this.ctx.fillStyle = "#4a3a2a";
                 this.ctx.fillRect(btn.x, btn.y, 90, 35);
             }
-            
             this.ctx.fillStyle = "#ffde9c";
             this.ctx.font = "bold 14px monospace";
             this.ctx.fillText(btn.text, btn.x + 15, btn.y + 23);
         });
     }
-    
     drawGameOver() {
         this.ctx.fillStyle = "rgba(0,0,0,0.8)";
         this.ctx.fillRect(0, 0, 800, 600);
