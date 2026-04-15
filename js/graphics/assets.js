@@ -1,13 +1,11 @@
 function helloGraphics() {
     console.log("🎨 Graphics & Assets ready");
 }
-
 window.AssetLoader = {
     images: {},
     loadedCount: 0,
     totalImages: 0,
     onComplete: null,
-    
     registerImage: function(name, path) {
         this.totalImages++;
         const img = new Image();
@@ -29,7 +27,6 @@ window.AssetLoader = {
         img.src = path;
         this.images[name] = img;
     },
-    
     loadAll: function(imagesList, callback) {
         this.onComplete = callback;
         const names = Object.keys(imagesList);
@@ -40,17 +37,14 @@ window.AssetLoader = {
             callback();
             return;
         }
-        
         for(let i = 0; i < names.length; i++) {
             const name = names[i];
             const path = imagesList[name];
             this.registerImage(name, path);
         }
     },
-    
     getImage: function(name) {
         return this.images[name] || null;
     }
 };
-
 helloGraphics();
