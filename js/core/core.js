@@ -110,7 +110,7 @@ class CoreGame {
         this.render();
         
         requestAnimationFrame((t) => this.gameLoop(t));
-    },
+    }
     
     // Добавьте в класс CoreGame
     attack() {
