@@ -217,5 +217,5 @@ class GameState {
         }
     }
 }
-
+window.gameState = new GameState();
 console.log("📊 Game State ready");
