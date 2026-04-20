@@ -60,6 +60,49 @@ class GameAI {
     
         return { x: 0, y: 0 };
     }
-
-
+if(enemy.hp <= 0) {
+    const index = GameState.enemies.indexOf(enemy);
+    if(index > -1) {
+        // Дроп ресурсов
+        const woodDrop = 5 + Math.floor(Math.random() * 10);
+        GameState.addWood(woodDrop);
+        console.log(`💰 Enemy dropped ${woodDrop} wood!`);
+        
+        // Эффект дропа
+        if(window.EffectsManager) {
+            EffectsManager.addPickupEffect(enemy.x, enemy.y);
+        }
+        
+        GameState.enemies.splice(index, 1);
+    }
+    console.log(`☠️ Enemy defeated! Remaining: ${GameState.enemies.length}`);
+    return true;
+}
+wanderBehavior: function(enemy, delta, playerX, playerY) {
+    const distToPlayer = Math.hypot(enemy.x - playerX, enemy.y - playerY);
+    
+    // Если игрок близко - убегаем
+    if(distToPlayer < 150) {
+        const dx = enemy.x - playerX;
+        const dy = enemy.y - playerY;
+        const dist = Math.hypot(dx, dy);
+        if(dist > 0.01) {
+            return {
+                x: (dx / dist) * GameBalance.ENEMY_SPEED * 0.8,
+                y: (dy / dist) * GameBalance.ENEMY_SPEED * 0.8
+            };
+        }
+    }
+    
+    // Иначе случайное блуждание
+    enemy.behavior.wanderTimer += delta;
+    if(enemy.behavior.wanderTimer > 3) {
+        enemy.behavior.wanderTimer = 0;
+        enemy.behavior.wanderAngle += (Math.random() - 0.5) * Math.PI;
+    }
+    return {
+        x: Math.cos(enemy.behavior.wanderAngle) * GameBalance.ENEMY_SPEED * 0.4,
+        y: Math.sin(enemy.behavior.wanderAngle) * GameBalance.ENEMY_SPEED * 0.4
+    };
+}
 
