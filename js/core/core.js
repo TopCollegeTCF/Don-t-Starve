@@ -15,13 +15,13 @@ class CoreGame {
     start() {
         this.lastTimestamp = 0;
         console.log("🎮 Game loop started");
-    
-    // Запускаем фоновую музыку через 1 секунду
+        
+        // Запускаем фоновую музыку через 1 секунду
         setTimeout(() => {
             this.soundManager.playMusic('ambient', 0.3);
         }, 1000);
     }
-        // Добавьте в класс CoreGame
+
     // Добавьте в класс CoreGame
     update(delta) {
         if (!this.gameState.gameActive) return;
@@ -77,151 +77,157 @@ class CoreGame {
             this.soundManager.stopMusic();
         }
     }
-    // Добавьте в класс CoreGame
+
     gather() {
         if (!this.gameState.gameActive) return false;
-    
-    // Поиск деревьев рядом
+        
+        // Поиск деревьев рядом
         const trees = this.gameState.getTreesInRange(
             this.gameState.player.x, 
             this.gameState.player.y, 
             this.gameBalance.GATHER_RADIUS
         );
-    
+        
         if (trees.length > 0) {
             const gain = Math.min(trees[0].wood, this.gameBalance.GATHER_WOOD_AMOUNT);
             trees[0].wood -= gain;
             this.gameState.addWood(gain);
-        
-        // Визуальный эффект
+            
+            // Визуальный эффект
             if (this.effectsManager) {
                 this.effectsManager.addPickupEffect(trees[0].x, trees[0].y);
             }
-        
-        // Удаляем дерево если ресурс закончился
+            
+            // Удаляем дерево если ресурс закончился
             if (trees[0].wood <= 0) {
                 this.gameState.removeTree(trees[0]);
             }
-        
+            
             this.soundManager.play('gather');
             return true;
-
-        this.lastTimestamp = currentTime;
-        this.render();
+        }
         
-        requestAnimationFrame((t) => this.gameLoop(t));
-    },
+        // Поиск ягод рядом
+        const berries = this.gameState.getBerriesInRange(
+            this.gameState.player.x, 
+            this.gameState.player.y, 
+            this.gameBalance.GATHER_RADIUS
+        );
+        
+        if (berries.length > 0) {
+            const gain = Math.min(berries[0].count, this.gameBalance.GATHER_BERRY_AMOUNT);
+            berries[0].count -= gain;
+            this.gameState.addHunger(gain * this.gameBalance.BERRY_HUNGER_RESTORE);
+            
+            // Визуальный эффект
+            if (this.effectsManager) {
+                this.effectsManager.addPickupEffect(berries[0].x, berries[0].y);
+            }
+            
+            // Удаляем куст если ягоды кончились
+            if (berries[0].count <= 0) {
+                this.gameState.removeBerry(berries[0]);
+            }
+            
+            this.soundManager.play('gather');
+            return true;
+        }
+        
+        return false;
+    }
     
     // Добавьте в класс CoreGame
     attack() {
         if (!this.gameState.gameActive) return false;
-    
+        
         // Поиск ближайшего врага
         const nearest = this.gameAI.findNearestEnemy(
             this.gameState.player.x, 
             this.gameState.player.y, 
             this.gameBalance.ATTACK_RADIUS
         );
-    
+        
         if (nearest) {
             // Наносим урон
             const defeated = this.gameAI.damageEnemy(nearest, this.gameBalance.PLAYER_DAMAGE);
-        
-
+            
             // Визуальный эффект удара
             if (this.effectsManager) {
                 this.effectsManager.addHitEffect(nearest.x, nearest.y);
             }
-        
+            
             this.soundManager.play('hit');
-        
+            
             if (defeated) {
                 console.log("💀 Enemy defeated!");
-
-        // Сбор ягод
-        const berries = GameState.getBerriesInRange(GameState.player.x, GameState.player.y, GameBalance.GATHER_RADIUS);
-        if(berries.length > 0) {
-            const gain = Math.min(berries[0].count, GameBalance.GATHER_BERRY_AMOUNT);
-            berries[0].count -= gain;
-            GameState.addHunger(gain * GameBalance.BERRY_HUNGER_RESTORE);
-            if(window.EffectsManager) {
-                EffectsManager.addPickupEffect(berries[0].x, berries[0].y);
             }
-            
-            if(berries[0].count <= 0) {
-                GameState.removeBerry(berries[0]);
-
-            }
-            SoundManager.play('gather');
             return true;
         }
-    
-
+        
         return false;
     }
 
     // Добавьте в класс CoreGame
     restart() {
-    // Сбрасываем состояние игры
+        // Сбрасываем состояние игры
         this.gameState.reset();
         this.gameAI.clearEnemies();
-    
-    // Сбрасываем камеру
+        
+        // Сбрасываем камеру
         if (this.camera) {
             this.camera.reset(this.gameState.player.x, this.gameState.player.y);
         }
-    
-    // Очищаем эффекты
+        
+        // Очищаем эффекты
         if (this.effectsManager) {
             this.effectsManager.effects = [];
         }
-    
-    // Запускаем музыку заново
+        
+        // Запускаем музыку заново
         this.soundManager.playMusic('ambient', 0.3);
-    
+        
+        console.log("🔄 Game restarted!");
     }
-    // Добавьте в класс CoreGame
+
     render(renderer) {
         if (!renderer) return;
-    
-
+        
         // Рисуем фон
         renderer.drawGround();
-    
+        
         // Рисуем деревья
         for (let i = 0; i < this.gameState.world.trees.length; i++) {
             renderer.drawTree(this.gameState.world.trees[i].x, this.gameState.world.trees[i].y);
         }
-    
+        
         // Рисуем ягоды
         for (let i = 0; i < this.gameState.world.berries.length; i++) {
             renderer.drawBerry(this.gameState.world.berries[i].x, this.gameState.world.berries[i].y, this.gameState.world.berries[i].count);
         }
-    
+        
         // Рисуем врагов
         for (let i = 0; i < this.gameState.enemies.length; i++) {
             const e = this.gameState.enemies[i];
             renderer.drawEnemy(e.x, e.y, e.hp, e.maxHp, e.type);
         }
-    
+        
         // Рисуем игрока
         renderer.drawPlayer(this.gameState.player.x, this.gameState.player.y, this.gameState.player.hp);
-    
+        
         // Рисуем визуальные эффекты
         if (this.effectsManager && renderer.camera) {
             this.effectsManager.draw(renderer.ctx, renderer.camera);
         }
-    
+        
         // Рисуем UI
         renderer.drawUI();
-    
+        
         // Рисуем экран Game Over если нужно
         if (!this.gameState.gameActive) {
             renderer.drawGameOver();
         }
-   
     }
-};
+}
 
 
 console.log("⚙️ Core ready");

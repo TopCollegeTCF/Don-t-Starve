@@ -34,37 +34,28 @@ class AssetLoader {
     }
     // Добавьте этот метод ВНУТРЬ класса AssetLoader
     loadImage(name, path) {
-    // Создаем новый объект Image
         const img = new Image();
-    
-    // Сохраняем ссылку на this (потому что внутри onload this будет другим)
-        const self = this;
-    
-    // Что делать когда изображение загрузится
-        img.onload = function() {
-        // Сохраняем изображение в Map под именем name
-        self.images.set(name, img);
-        // Увеличиваем счетчик
-        self.loadedCount++;
-        console.log(`✅ Loaded: ${name} (${self.loadedCount}/${self.totalImages})`);
-        
-        // Если все загрузились - вызываем колбэк
-        if (self.loadedCount === self.totalImages && self.onComplete) {
-            console.log("🎉 All assets loaded!");
-            self.onComplete();
-        }
-    
-    // Что делать если ошибка загрузки
-        img.onerror = function() {
-            console.error(`❌ Failed to load: ${name} from ${path}`);
-            self.loadedCount++;
-            if (self.loadedCount === self.totalImages && self.onComplete) {
-                self.onComplete();
+        img.onload = () => {
+            this.images.set(name, img);
+            this.loadedCount++;
+            console.log(`✅ Loaded: ${name} (${this.loadedCount}/${this.totalImages})`);
+            if (this.loadedCount === this.totalImages && this.onComplete) {
+                console.log("🎉 All assets loaded!");
+                this.onComplete();
             }
         };
-    
-    // Запускаем загрузку
+        img.onerror = () => {
+            console.error(`❌ Failed to load: ${name} from ${path}`);
+            this.loadedCount++;
+            if (this.loadedCount === this.totalImages && this.onComplete) {
+                this.onComplete();
+            }
+        };
         img.src = path;
+    }
+    
+    getImage(name) {
+        return this.images.get(name) || null;
     }
   
       // Добавьте этот метод ВНУТРЬ класса AssetLoader

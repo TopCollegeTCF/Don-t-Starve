@@ -10,11 +10,11 @@ class GameState {
             this.day = 1;
             this.dayTimer = 0;
             this.spawnTimer = 0;
-        }
+    }
         
-        init() {
-            this.generateWorld();
-            this.reset();
+    init() {
+        this.generateWorld();
+        this.reset();
     }
     
     clampCoord(value, margin = 50) {
@@ -181,14 +181,12 @@ class GameState {
     
     getTreesInRange(x, y, radius) {
         return this.world.trees.filter(tree => 
-            Math.hypot(tree.x - x, tree.y - y) < radius && tree.wood > 0
-    );
+            Math.hypot(tree.x - x, tree.y - y) < radius && tree.wood > 0);
     }
     
     getBerriesInRange(x, y, radius) {
         return this.world.berries.filter(berry => 
-            Math.hypot(berry.x - x, berry.y - y) < radius && berry.count > 0
-    );
+            Math.hypot(berry.x - x, berry.y - y) < radius && berry.count > 0);
     }
     
     removeTree(tree) {
@@ -201,30 +199,23 @@ class GameState {
         if (index > -1) this.world.berries.splice(index, 1);
     }
 
-    createEnemyBehavior: function(type, x, y) {
-        switch(type) {
+    createEnemyBehavior(type, x, y) {
+         switch(type) {
             case 'patrol':
                 return {
-                    patrolPoints: [
-                        { x: x - 100 + Math.random() * 200, y: y - 100 + Math.random() * 200 },
-                        { x: x - 100 + Math.random() * 200, y: y - 100 + Math.random() * 200 },
-                        { x: x - 100 + Math.random() * 200, y: y - 100 + Math.random() * 200 }
-                    ],
+                    patrolPoints: Array(3).fill().map(() => ({
+                        x: x - 100 + Math.random() * 200,
+                        y: y - 100 + Math.random() * 200
+                    })),
                     currentPatrolIndex: 0
                 };
             case 'guard':
-                return {
-                    guardPoint: { x: x, y: y, radius: 80 }
-                };
+                return { guardPoint: { x, y, radius: 80 } };
             case 'wander':
-                return {
-                    wanderAngle: Math.random() * Math.PI * 2,
-                    wanderTimer: 0
-                };
-            default:
-                return {};
+                return { wanderAngle: Math.random() * Math.PI * 2, wanderTimer: 0 };
+            default: return {};
         }
-    },
-};
-
+    }
+}
+window.gameState = new GameState();
 console.log("📊 Game State ready");
