@@ -27,6 +27,15 @@ window.addEventListener('DOMContentLoaded', () => {
         window.soundManager, 
         camera
     );
+
+    // Добавить после создания coreGame, перед inputHandler:
+
+// Создаем мини-карту
+    const minimap = new MiniMap(window.gameState, camera);
+    coreGame.minimap = minimap;
+
+    // В функции animate, после отрисовки всех систем, добавить:
+    if (coreGame.minimap) coreGame.minimap.draw(renderer.ctx);
     
     // ДОБАВИТЬ СИСТЕМЫ
     coreGame.showNotification = (msg) => {
@@ -86,83 +95,57 @@ window.addEventListener('DOMContentLoaded', () => {
         originalAddWood.call(this, amount);
         if (this.achievements) this.achievements.addWood(amount);
     };
-        // Создаем мини-карту
-    const minimap = new MiniMap(window.gameState, camera);
-    coreGame.minimap = minimap;
-
-        // В функции animate, после отрисовки всех систем, добавить:
-    if (coreGame.minimap) coreGame.minimap.draw(renderer.ctx);
+    
     const inputHandler = new InputHandler(canvas, camera, coreGame);
     coreGame.start();
     
     let lastTimestamp = 0;
     
     function animate(timestamp) {
-    if (lastTimestamp === 0) {
-        lastTimestamp = timestamp;
-        requestAnimationFrame(animate);
-        return;
-    }
-
-    const delta = timestamp - lastTimestamp;
-    lastTimestamp = timestamp;
-
-    // 1. Обновление логики
-    coreGame.update(delta);
-
-    // 2. Очистка экрана
-    renderer.clear();
-
-    // 3. Отрисовка всех игровых систем
-    coreGame.draw(renderer.ctx);
-
-    // 👉 4. ВСТАВЛЯТЬ ВОТ СЮДА (после основной отрисовки)
-    if (coreGame.minimap) {
-        coreGame.minimap.draw(renderer.ctx);
-    }
-
-    // 5. Следующий кадр
-    requestAnimationFrame(animate);
-
+        if (lastTimestamp === 0) {
+            lastTimestamp = timestamp;
+            requestAnimationFrame(animate);
+            return;
+        }
         
-    let delta = Math.min(0.033, (timestamp - lastTimestamp) / 1000);
+        let delta = Math.min(0.033, (timestamp - lastTimestamp) / 1000);
         
-    if (delta > 0.01) {
-        coreGame.update(delta);
+        if (delta > 0.01) {
+            coreGame.update(delta);
             
             // ОБНОВЛЕНИЕ СИСТЕМ
-        if (coreGame.visualEffects) coreGame.visualEffects.update(delta);
-        if (coreGame.dayNight && coreGame.gameState) {
-            coreGame.dayNight.update(coreGame.gameState.dayTimer, coreGame.gameBalance.DAY_DURATION);
+            if (coreGame.visualEffects) coreGame.visualEffects.update(delta);
+            if (coreGame.dayNight && coreGame.gameState) {
+                coreGame.dayNight.update(coreGame.gameState.dayTimer, coreGame.gameBalance.DAY_DURATION);
+            }
+            if (coreGame.gameState.experience) coreGame.gameState.experience.update(delta);
+            if (coreGame.gameState.achievements) coreGame.gameState.achievements.update(delta);
+            if (coreGame.notifTimer) {
+                coreGame.notifTimer -= delta;
+                if (coreGame.notifTimer <= 0) coreGame.notificationMsg = null;
+            }
         }
-        if (coreGame.gameState.experience) coreGame.gameState.experience.update(delta);
-        if (coreGame.gameState.achievements) coreGame.gameState.achievements.update(delta);
-        if (coreGame.notifTimer) {
-            coreGame.notifTimer -= delta;
-            if (coreGame.notifTimer <= 0) coreGame.notificationMsg = null;
-        }
-    }
         
-    lastTimestamp = timestamp;
-    coreGame.render(renderer);
+        lastTimestamp = timestamp;
+        coreGame.render(renderer);
         
         // ОТРИСОВКА СИСТЕМ
-    if (coreGame.dayNight) coreGame.dayNight.draw(renderer.ctx);
-    if (coreGame.visualEffects) coreGame.visualEffects.draw(renderer.ctx, camera);
-    if (coreGame.gameState.experience) {
-        coreGame.gameState.experience.draw(renderer.ctx, camera, coreGame.gameState.player.x, coreGame.gameState.player.y);
-    }
-    if (coreGame.gameState.achievements) coreGame.gameState.achievements.draw(renderer.ctx);
-    if (coreGame.crafting) coreGame.crafting.draw(renderer.ctx);
-    if (coreGame.notificationMsg) {
-        renderer.ctx.fillStyle = "rgba(0,0,0,0.8)";
-        renderer.ctx.fillRect(250, 500, 300, 40);
-        renderer.ctx.fillStyle = "#ffde9c";
-        renderer.ctx.font = "14px monospace";
-        renderer.ctx.fillText(coreGame.notificationMsg, 270, 525);
-    }
+        if (coreGame.dayNight) coreGame.dayNight.draw(renderer.ctx);
+        if (coreGame.visualEffects) coreGame.visualEffects.draw(renderer.ctx, camera);
+        if (coreGame.gameState.experience) {
+            coreGame.gameState.experience.draw(renderer.ctx, camera, coreGame.gameState.player.x, coreGame.gameState.player.y);
+        }
+        if (coreGame.gameState.achievements) coreGame.gameState.achievements.draw(renderer.ctx);
+        if (coreGame.crafting) coreGame.crafting.draw(renderer.ctx);
+        if (coreGame.notificationMsg) {
+            renderer.ctx.fillStyle = "rgba(0,0,0,0.8)";
+            renderer.ctx.fillRect(250, 500, 300, 40);
+            renderer.ctx.fillStyle = "#ffde9c";
+            renderer.ctx.font = "14px monospace";
+            renderer.ctx.fillText(coreGame.notificationMsg, 270, 525);
+        }
         
-    requestAnimationFrame(animate);
+        requestAnimationFrame(animate);
     }
     
     requestAnimationFrame(animate);
