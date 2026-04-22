@@ -52,5 +52,35 @@ class InputHandler {
             e.preventDefault();
             this.coreGame.restart();
         }
+         // Добавить в метод handleKeydown класса InputHandler:
+ // НОВЫЕ КОМАНДЫ
+        if (e.key === 'c' || e.key === 'C') {
+            e.preventDefault();
+            if (this.coreGame.crafting) {
+                this.coreGame.crafting.toggleMenu();
+            }
+        }
+    
+        if (e.key === 's' || e.key === 'S') {
+            e.preventDefault();
+            if (this.coreGame.saveSystem) {
+                this.coreGame.saveSystem.save();
+            }
+        }
+    
+        if (e.key === 'l' || e.key === 'L') {
+            e.preventDefault();
+            if (this.coreGame.saveSystem) {
+                this.coreGame.saveSystem.load();
+            }
+        }
+    
+    // Обработка цифр для крафта
+        if (this.coreGame.crafting && this.coreGame.crafting.menuOpen) {
+            if (e.key === '1' || e.key === '2') {
+                e.preventDefault();
+                this.coreGame.crafting.handleKey(e.key);
+            }
+        }
     }
 }
