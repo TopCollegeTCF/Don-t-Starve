@@ -31,16 +31,16 @@ window.addEventListener('DOMContentLoaded', () => {
     // Добавить после создания coreGame, перед inputHandler:
 
 // Создаем мини-карту
-    const minimap = new MiniMap(window.gameState, camera);
+    const minimap = new MiniMap(coreGame, camera);
     coreGame.minimap = minimap;
 
     // В функции animate, после отрисовки всех систем, добавить:
     if (coreGame.minimap) coreGame.minimap.draw(renderer.ctx);
-    
+
     // ДОБАВИТЬ СИСТЕМЫ
     coreGame.showNotification = (msg) => {
-        coreGame.notificationMsg = msg;
-        coreGame.notifTimer = 2;
+    coreGame.notificationMsg = msg;
+    coreGame.notifTimer = 2;
     };
     
     const visualEffects = new VisualEffects();

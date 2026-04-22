@@ -1,5 +1,3 @@
-
-// js/core/core.js
 class CoreGame {
     constructor(gameState, gameBalance, gameAI, effectsManager, soundManager, camera) {
         this.gameState = gameState;
@@ -133,6 +131,32 @@ class CoreGame {
             return true;
         }
         
+        // НОВЫЙ КОД: Поиск камней рядом
+        const stones = this.gameState.getStonesInRange(
+            this.gameState.player.x, 
+            this.gameState.player.y, 
+            this.gameBalance.GATHER_RADIUS
+        );
+        
+        if (stones.length > 0) {
+            const gain = Math.min(stones[0].stone, this.gameBalance.GATHER_STONE_AMOUNT);
+            stones[0].stone -= gain;
+            this.gameState.addStone(gain);
+            
+            // Визуальный эффект
+            if (this.effectsManager) {
+                this.effectsManager.addPickupEffect(stones[0].x, stones[0].y);
+            }
+            
+            // Удаляем булыжник если камень закончился
+            if (stones[0].stone <= 0) {
+                this.gameState.removeStone(stones[0]);
+            }
+            
+            this.soundManager.play('gather');
+            return true;
+        }
+        
         return false;
     }
     
@@ -203,6 +227,13 @@ class CoreGame {
         // Рисуем ягоды
         for (let i = 0; i < this.gameState.world.berries.length; i++) {
             renderer.drawBerry(this.gameState.world.berries[i].x, this.gameState.world.berries[i].y, this.gameState.world.berries[i].count);
+        }
+        
+        // НОВЫЙ КОД: Рисуем камни
+        if (this.gameState.world.stones) {
+            for (let i = 0; i < this.gameState.world.stones.length; i++) {
+                renderer.drawStone(this.gameState.world.stones[i].x, this.gameState.world.stones[i].y, this.gameState.world.stones[i].stone);
+            }
         }
         
         // Рисуем врагов
