@@ -84,3 +84,60 @@ class InputHandler {
         }
     }
 }
+// Старый код (удалить):
+// if (x > 690 && x < 780 && y > 545 && y < 580) {
+//     this.coreGame.restart();
+// }
+
+// Новый код:
+if (x > 680 && x < 770 && y > 10 && y < 45) {
+    this.coreGame.restart();
+    // Сброс камеры к игроку
+    if (this.camera) {
+        this.camera.resetToPlayer();
+    }
+}
+gather() {
+    const gameBalance = this.configManager.getGameBalance();
+    
+    // Существующий код для сбора дерева
+    const treesInRange = this.world.getTreesInRange(
+        this.player.x, 
+        this.player.y, 
+        gameBalance.GATHER_RADIUS
+    );
+    
+    if (treesInRange.length > 0) {
+        const woodAmount = treesInRange[0].gatherWood(gameBalance.GATHER_WOOD_AMOUNT);
+        if (woodAmount > 0) {
+            this.inventory.addWood(woodAmount);
+        }
+    }
+    
+    // НОВЫЙ КОД: Сбор камня
+    const stonesInRange = this.world.getStonesInRange(
+        this.player.x, 
+        this.player.y, 
+        gameBalance.GATHER_RADIUS
+    );
+    
+    if (stonesInRange.length > 0) {
+        const stoneAmount = stonesInRange[0].gatherStone(gameBalance.GATHER_STONE_AMOUNT);
+        if (stoneAmount > 0) {
+            this.inventory.addStone(stoneAmount);
+        }
+    }
+}
+class Stone {
+    // ... существующий код ...
+    
+    gatherStone(amount) {
+        const gathered = Math.min(amount, this.stone);
+        this.stone -= gathered;
+        return gathered;
+    }
+    
+    isEmpty() {
+        return this.stone <= 0;
+    }
+}
