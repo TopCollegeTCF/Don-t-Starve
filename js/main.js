@@ -27,6 +27,15 @@ window.addEventListener('DOMContentLoaded', () => {
         window.soundManager, 
         camera
     );
+
+    // Добавить после создания coreGame, перед inputHandler:
+
+// Создаем мини-карту
+    const minimap = new MiniMap(window.gameState, camera);
+    coreGame.minimap = minimap;
+
+    // В функции animate, после отрисовки всех систем, добавить:
+    if (coreGame.minimap) coreGame.minimap.draw(renderer.ctx);
     
     // ДОБАВИТЬ СИСТЕМЫ
     coreGame.showNotification = (msg) => {
@@ -86,44 +95,18 @@ window.addEventListener('DOMContentLoaded', () => {
         originalAddWood.call(this, amount);
         if (this.achievements) this.achievements.addWood(amount);
     };
-        // Создаем мини-карту
-    const minimap = new MiniMap(window.gameState, camera);
-    coreGame.minimap = minimap;
-
-        // В функции animate, после отрисовки всех систем, добавить:
-    if (coreGame.minimap) coreGame.minimap.draw(renderer.ctx);
+    
     const inputHandler = new InputHandler(canvas, camera, coreGame);
     coreGame.start();
     
     let lastTimestamp = 0;
     
     function animate(timestamp) {
-    if (lastTimestamp === 0) {
-        lastTimestamp = timestamp;
-        requestAnimationFrame(animate);
-        return;
-    }
-
-    const delta = timestamp - lastTimestamp;
-    lastTimestamp = timestamp;
-
-    // 1. Обновление логики
-    coreGame.update(delta);
-
-    // 2. Очистка экрана
-    renderer.clear();
-
-    // 3. Отрисовка всех игровых систем
-    coreGame.draw(renderer.ctx);
-
-    // 👉 4. ВСТАВЛЯТЬ ВОТ СЮДА (после основной отрисовки)
-    if (coreGame.minimap) {
-        coreGame.minimap.draw(renderer.ctx);
-    }
-
-    // 5. Следующий кадр
-    requestAnimationFrame(animate);
-}
+        if (lastTimestamp === 0) {
+            lastTimestamp = timestamp;
+            requestAnimationFrame(animate);
+            return;
+        }
         
         let delta = Math.min(0.033, (timestamp - lastTimestamp) / 1000);
         

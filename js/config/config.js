@@ -19,11 +19,13 @@ class GameConfig {
         };
         
         this.sounds = {
-            click: 'assets/audio/sounds/click.mp3',
-            gather: 'assets/audio/sounds/gather.mp3',
-            hit: 'assets/audio/sounds/hit.mp3',
-            ambient: 'assets/audio/sounds/ambient.mp3',
-            gameover: 'assets/audio/sounds/gameover.mp3'
+            click: 'assets/sounds/click.wav',
+            gather: 'assets/sounds/gather.wav',
+            hit: 'assets/sounds/hit.wav',
+            ambient: 'assets/sounds/ambient.wav',
+            gameover: 'assets/sounds/gameover.wav',
+            ambient_day: 'assets/sounds/ambient_day.wav',
+            ambient_night: 'assets/sounds/ambient_night.wav'
         };
     }
 }
