@@ -17,7 +17,7 @@ class CoreGame {
         // Запускаем фоновую музыку через 1 секунду
         setTimeout(() => {
             this.soundManager.playMusic('ambient', 0.3);
-        }, 1000);
+        }, 5000);
     }
 
     // Добавьте в класс CoreGame
