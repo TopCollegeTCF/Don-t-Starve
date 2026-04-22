@@ -1,3 +1,4 @@
+
 class VisualEffects {
     constructor() {
         this.particles = [];
@@ -36,3 +37,4 @@ class VisualEffects {
         }
     }
 }
+
