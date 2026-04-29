@@ -1,7 +1,7 @@
 class MiniMap {
-    constructor(gameState, camera) {
-        this.gameState = gameState;
-        this.camera = camera;
+    constructor(coreGame) {
+        this.gameState = coreGame.gameState;
+        this.camera = coreGame.camera;
         this.width = 150;
         this.height = 150;
         this.x = 620;   
