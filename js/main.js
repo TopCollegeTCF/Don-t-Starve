@@ -32,9 +32,6 @@ window.addEventListener('DOMContentLoaded', () => {
     const minimap = new MiniMap(coreGame);
     coreGame.minimap = minimap;
 
-    // В функции animate, после отрисовки всех систем, добавить:
-    if (coreGame.minimap) coreGame.minimap.draw(renderer.ctx);
-
     // ДОБАВИТЬ СИСТЕМЫ
     coreGame.showNotification = (msg) => {
     coreGame.notificationMsg = msg;
@@ -141,6 +138,8 @@ window.addEventListener('DOMContentLoaded', () => {
             renderer.ctx.font = "14px monospace";
             renderer.ctx.fillText(coreGame.notificationMsg, 270, 525);
         }
+            // В функции animate, после отрисовки всех систем, добавить:
+    if (coreGame.minimap) coreGame.minimap.draw(renderer.ctx);
         
         requestAnimationFrame(animate);
     }
