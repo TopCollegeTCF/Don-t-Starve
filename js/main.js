@@ -24,7 +24,7 @@ window.addEventListener('DOMContentLoaded', () => {
         GameRenderer.init(ctx, GameCamera);
     } else {
         console.error("❌ GameRenderer not loaded!");
-=======
+    }
     function checkAllLoaded() {
         if(imagesLoaded && soundsLoaded) {
             console.log("🎮 All resources loaded! Starting game...");
@@ -33,46 +33,46 @@ window.addEventListener('DOMContentLoaded', () => {
             CoreGame.start();
             startGameLoop();
             // Заменить существующий объект imagesToLoad на:
-const imagesToLoad = window.GameAssets.images;
+        const imagesToLoad = window.GameAssets.images;
 
-// Заменить существующий объект soundsToLoad на:
-const soundsToLoad = window.GameAssets.sounds;
-        }
+        // Заменить существующий объект soundsToLoad на:
+        const soundsToLoad = window.GameAssets.sounds;
+                }
 
-    }
-    
-    // Инициализация обработчика ввода с камерой
-    if(window.InputHandler) {
-        InputHandler.init(canvas, GameCamera);
-    }
-    
-    // Инициализация игрового состояния
-    if(window.GameState) {
-        GameState.init();
-    } else {
-        console.error("❌ GameState not loaded!");
-    }
-    
-    // Запуск игрового цикла
-    if(window.CoreGame) {
-        CoreGame.start();
-    }
-    
-    // Анимационный цикл
-    let frameId;
-    function animate(timestamp) {
-        if(window.CoreGame) {
-            CoreGame.gameLoop(timestamp);
-        }
-        frameId = requestAnimationFrame(animate);
-    }
-    
-    frameId = requestAnimationFrame(animate);
-    
-    // Очистка при выгрузке
-    window.addEventListener('beforeunload', () => {
-        if(frameId) cancelAnimationFrame(frameId);
-    });
-    
-    console.log("✅ Game initialized successfully!");
-});
+            }
+            
+            // Инициализация обработчика ввода с камерой
+            if(window.InputHandler) {
+                InputHandler.init(canvas, GameCamera);
+            }
+            
+            // Инициализация игрового состояния
+            if(window.GameState) {
+                GameState.init();
+            } else {
+                console.error("❌ GameState not loaded!");
+            }
+            
+            // Запуск игрового цикла
+            if(window.CoreGame) {
+                CoreGame.start();
+            }
+            
+            // Анимационный цикл
+            let frameId;
+            function animate(timestamp) {
+                if(window.CoreGame) {
+                    CoreGame.gameLoop(timestamp);
+                }
+                frameId = requestAnimationFrame(animate);
+            }
+            
+            frameId = requestAnimationFrame(animate);
+            
+            // Очистка при выгрузке
+            window.addEventListener('beforeunload', () => {
+                if(frameId) cancelAnimationFrame(frameId);
+            });
+            
+        console.log("✅ Game initialized successfully!");
+})
