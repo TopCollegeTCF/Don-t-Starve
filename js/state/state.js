@@ -5,12 +5,11 @@ class GameState {
                 x: 1200, y: 900, hp: 100, hunger: 100, wood: 0, stone: 0,
                 targetX: null, targetY: null
             };
-            this.world = { trees: [], berries: [] };
+            this.world = { trees: [], berries: [], stones: [] };
             this.enemies = [];
             this.day = 1;
             this.dayTimer = 0;
             this.spawnTimer = 0;
-            this.world.stones = []
     }
         
     init() {

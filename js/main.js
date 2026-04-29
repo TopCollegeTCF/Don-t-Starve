@@ -29,11 +29,8 @@ window.addEventListener('DOMContentLoaded', () => {
     );
 
 // Создаем мини-карту
-    const minimap = new MiniMap(coreGame, camera);
+    const minimap = new MiniMap(coreGame);
     coreGame.minimap = minimap;
-
-    // В функции animate, после отрисовки всех систем, добавить:
-    if (coreGame.minimap) coreGame.minimap.draw(renderer.ctx);
 
     // ДОБАВИТЬ СИСТЕМЫ
     coreGame.showNotification = (msg) => {
@@ -43,7 +40,6 @@ window.addEventListener('DOMContentLoaded', () => {
     
     const visualEffects = new VisualEffects();
     const dayNight = new DayNightSystem();
-    dayNight.initStars();
     const experience = new ExperienceSystem(window.gameState);
     const achievements = new AchievementSystem(window.gameState);
     const crafting = new CraftingSystem(window.gameState, coreGame);
@@ -142,6 +138,8 @@ window.addEventListener('DOMContentLoaded', () => {
             renderer.ctx.font = "14px monospace";
             renderer.ctx.fillText(coreGame.notificationMsg, 270, 525);
         }
+            // В функции animate, после отрисовки всех систем, добавить:
+    if (coreGame.minimap) coreGame.minimap.draw(renderer.ctx);
         
         requestAnimationFrame(animate);
     }
