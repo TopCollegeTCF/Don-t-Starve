@@ -168,6 +168,10 @@ class GameAI {
             enemy.behavior.wanderTimer = 0;
         }
 
+        if (enemy.behavior.pauseTimer === undefined) {
+            enemy.behavior.pauseTimer = 0;
+        }
+
         if (enemy.behavior.wanderAngle === undefined) {
             enemy.behavior.wanderAngle = Math.random() * Math.PI * 2;
         }
@@ -192,11 +196,17 @@ class GameAI {
         }
 
         // Иначе случайное блуждание
+        if (enemy.behavior.pauseTimer > 0) {
+            enemy.behavior.pauseTimer -= delta;
+            return { x: 0, y: 0 };
+        }
+
         enemy.behavior.wanderTimer += delta;
 
         if (enemy.behavior.wanderTimer > 3) {
             enemy.behavior.wanderTimer = 0;
             enemy.behavior.wanderAngle += (Math.random() - 0.5) * Math.PI;
+            enemy.behavior.pauseTimer = 0.6 + Math.random() * 0.6;
         }
 
         return {
